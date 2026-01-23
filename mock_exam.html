@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成式 AI 美術認證 - 終極模擬測驗 (含詳解)</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #22c55e;
+            --error: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 700px;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        h1 { margin: 0 0 10px 0; color: var(--primary); }
+        .subtitle { color: #64748b; font-size: 0.9rem; }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-between;
+            background: #f1f5f9;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            color: #475569;
+            margin-bottom: 2rem;
+        }
+
+        /* Question Styles */
+        .question-card { animation: fadeIn 0.4s ease; }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .badge.ai { background: #dbeafe; color: #1e40af; } /* AI 原理 */
+        .badge.tool { background: #d1fae5; color: #065f46; } /* 軟體操作 */
+        .badge.law { background: #fef3c7; color: #92400e; } /* 法規美學 */
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+
+        .option-btn {
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1rem;
+            transition: all 0.2s;
+            color: #334155;
+            position: relative;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+        }
+
+        .option-btn:disabled { cursor: not-allowed; opacity: 0.8; }
+
+        .option-btn.correct {
+            background-color: #dcfce7;
+            border-color: var(--success);
+            color: #14532d;
+        }
+        .option-btn.correct::after { content: '✔'; position: absolute; right: 20px; font-weight: bold; }
+
+        .option-btn.wrong {
+            background-color: #fee2e2;
+            border-color: var(--error);
+            color: #7f1d1d;
+        }
+        .option-btn.wrong::after { content: '✖'; position: absolute; right: 20px; font-weight: bold; }
+
+        /* Feedback Area */
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border-left: 5px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            display: none;
+        }
+        .feedback-title { font-weight: bold; display: block; margin-bottom: 5px; color: var(--primary); }
+
+        .next-btn {
+            display: none;
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .next-btn:hover { background-color: #1d4ed8; }
+
+        /* Result Screen */
+        .result-screen { text-align: center; display: none; padding: 20px; }
+        .score-circle {
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center; justify-content: center;
+            font-size: 3rem; font-weight: bold;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+        .analysis { text-align: left; margin-top: 30px; background: #f1f5f9; padding: 20px; border-radius: 10px; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>📝 AI 美術設計認證模擬題庫</h1>
+        <div class="subtitle">針對資策會初級認證 & 李宏毅教授觀念</div>
+    </header>
+
+    <!-- Quiz Area -->
+    <div id="quiz-area">
+        <div class="stats-bar">
+            <span id="progress">題目: 1 / 20</span>
+            <span id="score-display">得分: 0</span>
+        </div>
+
+        <div id="question-container" class="question-card">
+            <!-- Question content injected by JS -->
+        </div>
+
+        <div id="feedback" class="feedback">
+            <span class="feedback-title">💡 詳解：</span>
+            <span id="feedback-text"></span>
+        </div>
+
+        <button id="next-btn" class="next-btn" onclick="nextQuestion()">下一題 ⮕</button>
+    </div>
+
+    <!-- Result Area -->
+    <div id="result-area" class="result-screen">
+        <div class="score-circle" id="final-score">85</div>
+        <h2 id="result-title">恭喜及格！</h2>
+        <p id="result-desc">你已經掌握了大部份的觀念。</p>
+        
+        <div class="analysis">
+            <h3>📊 弱點分析</h3>
+            <ul id="weakness-list">
+                <li>暫無弱點，太強了！</li>
+            </ul>
+        </div>
+
+        <button class="next-btn" style="display:block; margin-top:20px;" onclick="restartQuiz()">重新挑戰</button>
+        <a href="index.html" class="next-btn" style="display:block; margin-top:10px; background:#64748b; text-decoration:none; text-align:center;">⬅ 回到講義複習</a>
+    </div>
+</div>
+
+<script>
+    // 題庫資料：包含 AI 原理(李宏毅)、Fooocus 操作、法規
+    const questionBank = [
+        // --- Day 1 & 2: AI 原理 (新增李宏毅教授觀點) ---
+        {
+            category: "ai",
+            badge: "AI 原理",
+            q: "ChatGPT 或 LLM 的運作本質，在李宏毅教授的課程中被比喻為什麼？",
+            options: ["搜尋引擎 (Search Engine)", "文字接龍 (Next Token Prediction)", "資料庫檢索 (Database Lookup)", "複製貼上機器 (Copy & Paste)"],
+            a: 1,
+            note: "LLM 並不是在思考或查資料，而是根據前文的機率分佈，預測下一個 Token 是什麼，就像玩文字接龍一樣。"
+        },
+        {
+            category: "ai",
+            badge: "AI 原理",
+            q: "關於「Token (標記)」，下列敘述何者正確？",
+            options: ["一個 Token 一定等於一個英文字母", "一個 Token 一定等於一個英文單字", "AI 讀取的是 Token 轉換成的向量，且 Token 不一定等於完整的字", "Token 是指圖片的解析度"],
+            a: 2,
+            note: "AI 看不懂文字，它看的是 Token ID。對於常見字，1個字可能=1個Token；但對於罕見字或中文，1個字可能由多個 Token 組成。"
+        },
+        {
+            category: "ai",
+            badge: "AI 原理",
+            q: "AI 模型訓練的第三階段「RLHF (Reinforcement Learning from Human Feedback)」的主要目的是什麼？",
+            options: ["讓 AI 學會更多冷知識", "讓 AI 的畫質變好", "讓 AI 的回答符合人類偏好（如：有禮貌、安全、不說髒話）", "大幅縮短訓練時間"],
+            a: 2,
+            note: "RLHF 是為了「對齊 (Alignment)」，透過人類的回饋來調整 AI，讓它不要像 Base Model 那樣只會冷冰冰地接龍，而是成為有用的助理。"
+        },
+        {
+            category: "ai",
+            badge: "AI 原理",
+            q: "為什麼生成式 AI 會產生「幻覺 (Hallucination)」？",
+            options: ["因為它是機率模型，當資料不足時會依照機率「編造」內容", "因為電腦中毒", "因為網路連線不穩定", "因為它有自我意識想要騙人"],
+            a: 0,
+            note: "AI 是依據機率生成下一個字。當它遇到訓練資料中沒有的事實，它仍會自信地選出機率最高的字串接下去，導致一本正經地胡說八道。"
+        },
+        {
+            category: "ai",
+            badge: "AI 原理",
+            q: "擴散模型 (Diffusion Model) 的圖像生成過程，可以被描述為下列哪一種行為？",
+            options: ["將多張網路圖片拼接起來", "從雜訊 (Noise) 中逐步去噪 (Denoise) 還原出影像", "直接從資料庫下載圖片", "像畫家一樣從左上角畫到右下角"],
+            a: 1,
+            note: "Diffusion Model 的逆向過程 (Reverse Diffusion) 就是從一張全是雜訊的圖開始，根據 Prompt 一步步移除雜訊，直到影像浮現。"
+        },
+
+        // --- Day 3: 法規與美學 ---
+        {
+            category: "law",
+            badge: "法規與倫理",
+            q: "依據台灣目前的見解，關於「純 AI 生成之圖片」的著作權歸屬，下列何者正確？",
+            options: ["輸入指令 (Prompt) 的人擁有著作權", "AI 軟體公司擁有著作權", "原則上無著作權，因非人類精神創作", "付費訂閱者自動擁有著作權"],
+            a: 2,
+            note: "必考陷阱！著作權法保護「人類精神創作」。純 AI 生成物被視為機器運算結果，目前屬於公共領域，無著作權。"
+        },
+        {
+            category: "law",
+            badge: "法規與倫理",
+            q: "若使用 AI 進行「圖生圖 (Img2Img)」，參考了知名卡通角色並保留其核心特徵，是否可能侵權？",
+            options: ["不會，因為是 AI 算的", "會，可能侵害改作權或重製權", "不會，只要不商用就沒事", "看運氣"],
+            a: 1,
+            note: "若產出的圖片與原圖有「實質相似」，即使是 AI 生成的，仍可能構成侵權。"
+        },
+        {
+            category: "law",
+            badge: "設計美學",
+            q: "在海報設計中，為了讓標題文字清晰可見，我們通常會在背景生成時加入什麼 Prompt？",
+            options: ["highly detailed, crowded", "clean background, negative space", "colorful, complex pattern", "full text"],
+            a: 1,
+            note: "留白 (White Space / Negative Space) 是設計重點。使用 clean background 可以預留空間給文字排版。"
+        },
+
+        // --- Day 4: Fooocus / SD 操作 ---
+        {
+            category: "tool",
+            badge: "Fooocus 操作",
+            q: "在 Fooocus 中，我不想要畫面出現「浮水印」或「多餘的手指」，應該將關鍵字輸入在哪裡？",
+            options: ["Style 選項", "Positive Prompt", "Negative Prompt", "Advanced Settings"],
+            a: 2,
+            note: "Negative Prompt (負面提示詞) 用來告訴 AI 「不要畫什麼」。"
+        },
+        {
+            category: "tool",
+            badge: "Fooocus 操作",
+            q: "Fooocus 的「Image Prompt」功能中，若我想要參考一張線稿(草圖)來上色，應該選擇哪種模式？",
+            options: ["FaceSwap", "PyraCanny", "CPDS", "Image Prompt"],
+            a: 1,
+            note: "PyraCanny (Canny Edge) 是邊緣檢測，專門用來鎖定線條構圖，適合線稿上色。"
+        },
+        {
+            category: "tool",
+            badge: "Fooocus 操作",
+            q: "若生成的圖片手指出現瑕疵，最適合使用哪個功能進行修復？",
+            options: ["Upscale (放大)", "Inpaint (局部重繪)", "Vary (變化)", "Describe (反推)"],
+            a: 1,
+            note: "Inpaint 允許你塗抹特定區域（如爛手），重新生成該部位，是術科考試必備技能。"
+        },
+        {
+            category: "tool",
+            badge: "Fooocus 操作",
+            q: "關於 LoRA 模型的使用，下列建議何者最安全（不易破圖）？",
+            options: ["權重設為 2.0", "權重設為 0.5 ~ 0.8", "權重設為 0", "權重設為 -1.0"],
+            a: 1,
+            note: "LoRA 權重過高 (如 > 1.0) 容易導致畫面過擬合、出現雜訊或崩壞，通常 0.6-0.8 效果最佳。"
+        },
+        {
+            category: "tool",
+            badge: "Fooocus 操作",
+            q: "Fooocus 介面中的 Style 選項（如 SAI-3D, Cinematic）的主要功能是？",
+            options: ["調整圖片解析度", "自動幫你加入一大串風格相關的 Prompt", "控制生成步數", "切換底模"],
+            a: 1,
+            note: "Style 功能是 Fooocus 的特色，勾選後它會在後台自動補上高品質的風格描述詞，省去手打的麻煩。"
+        },
+        {
+            category: "tool",
+            badge: "Prompt 工程",
+            q: "在 Prompt 語法中，若要「強調」某個關鍵字 (例如 cat)，正確寫法是？",
+            options: ["[cat]", "(cat)", "<cat>", "{cat}"],
+            a: 1,
+            note: "圓括號 () 代表增強權重 (Emphasis)，方括號 [] 代表減弱。"
+        },
+        {
+            category: "tool",
+            badge: "軟體參數",
+            q: "若我想要「重現」剛剛生成的那張圖，只是想微調一個小細節，我必須固定哪個參數？",
+            options: ["Guidance Scale", "Sharpness", "Seed (種子碼)", "Aspect Ratio"],
+            a: 2,
+            note: "Seed 控制隨機噪聲的初始狀態。固定 Seed 才能在相同參數下生成一樣的構圖。"
+        },
+        // 更多題目可在此擴充
+        {
+             category: "ai",
+             badge: "AI 原理",
+             q: "在 Text-to-Image 生成過程中，負責將你的文字指令翻譯成 AI 看得懂的向量的是哪個元件？",
+             options: ["U-Net", "VAE (Decoder)", "CLIP (Text Encoder)", "GAN"],
+             a: 2,
+             note: "CLIP (Contrastive Language-Image Pre-Training) 負責連結文字與圖像的語意。"
+        },
+        {
+             category: "tool",
+             badge: "Fooocus 操作",
+             q: "考試題目要求生成一張「16:9」的海報，我應該在哪裡設定？",
+             options: ["Style 分頁", "Setting (或 Advanced) 的 Aspect Ratios", "Model 分頁", "Prompt 輸入框"],
+             a: 1,
+             note: "長寬比設定通常在 Setting 面板中。"
+        },
+        {
+             category: "tool",
+             badge: "術科實戰",
+             q: "題目要求將一張直式的照片，擴充變成橫式的背景，這屬於什麼技術？",
+             options: ["Inpaint (重繪)", "Outpaint (擴繪)", "Deepfake", "Text-to-Image"],
+             a: 1,
+             note: "Outpainting 是向外延伸畫布，讓 AI 補完原本不存在的畫面。"
+        }
+    ];
+
+    // 系統邏輯
+    let quizData = [];
+    let currentIdx = 0;
+    let score = 0;
+    let wrongCategories = {}; // 紀錄錯題類型
+
+    // 洗牌
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function initQuiz() {
+        quizData = shuffle([...questionBank]); // 複製並洗牌
+        currentIdx = 0;
+        score = 0;
+        wrongCategories = { "ai": 0, "law": 0, "tool": 0 };
+        
+        document.getElementById('quiz-area').style.display = 'block';
+        document.getElementById('result-area').style.display = 'none';
+        
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const qData = quizData[currentIdx];
+        const container = document.getElementById('question-container');
+        const nextBtn = document.getElementById('next-btn');
+        const feedback = document.getElementById('feedback');
+
+        // 更新進度
+        document.getElementById('progress').innerText = `題目: ${currentIdx + 1} / ${quizData.length}`;
+        document.getElementById('score-display').innerText = `得分: ${Math.round((score / quizData.length) * 100)}`;
+
+        // 重置 UI
+        nextBtn.style.display = 'none';
+        feedback.style.display = 'none';
+        
+        // 渲染題目
+        let optionsHtml = '';
+        qData.options.forEach((opt, idx) => {
+            optionsHtml += `<button class="option-btn" onclick="checkAnswer(this, ${idx}, ${qData.a}, '${qData.category}')">${opt}</button>`;
+        });
+
+        container.innerHTML = `
+            <span class="badge ${qData.category}">${qData.badge}</span>
+            <div class="question-text">${qData.q}</div>
+            <div class="options-grid">${optionsHtml}</div>
+        `;
+    }
+
+    function checkAnswer(btn, userIdx, correctIdx, category) {
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true); // 鎖定
+
+        const feedback = document.getElementById('feedback');
+        const qData = quizData[currentIdx];
+
+        if (userIdx === correctIdx) {
+            btn.classList.add('correct');
+            score++;
+        } else {
+            btn.classList.add('wrong');
+            allBtns[correctIdx].classList.add('correct'); // 顯示正解
+            // 記錄錯題類型
+            if(wrongCategories[category] !== undefined) wrongCategories[category]++;
+        }
+
+        // 顯示詳解
+        document.getElementById('feedback-text').innerText = qData.note;
+        feedback.style.display = 'block';
+        document.getElementById('next-btn').style.display = 'block';
+    }
+
+    function nextQuestion() {
+        currentIdx++;
+        if (currentIdx < quizData.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz-area').style.display = 'none';
+        document.getElementById('result-area').style.display = 'block';
+
+        const finalScore = Math.round((score / quizData.length) * 100);
+        document.getElementById('final-score').innerText = finalScore;
+
+        const title = document.getElementById('result-title');
+        const desc = document.getElementById('result-desc');
+        const circle = document.getElementById('final-score');
+
+        if (finalScore >= 70) {
+            title.innerText = "🎉 恭喜及格！";
+            title.style.color = "#166534";
+            desc.innerText = "你的觀念非常清晰，保持這個狀態去考試吧！";
+            circle.style.background = "#22c55e";
+        } else {
+            title.innerText = "💪 還差一點點！";
+            title.style.color = "#ca8a04";
+            desc.innerText = "別灰心，針對下方弱點再複習一下講義。";
+            circle.style.background = "#eab308";
+        }
+
+        // 弱點分析
+        const list = document.getElementById('weakness-list');
+        list.innerHTML = '';
+        let hasWeakness = false;
+
+        if (wrongCategories['ai'] >= 2) {
+            list.innerHTML += `<li><strong>AI 原理：</strong> Token、擴散模型或 RLHF 觀念較弱，建議複習 Day 1 & 2。</li>`;
+            hasWeakness = true;
+        }
+        if (wrongCategories['law'] >= 1) {
+            list.innerHTML += `<li><strong>法規與倫理：</strong> 著作權陷阱題要注意，建議複習 Day 3。</li>`;
+            hasWeakness = true;
+        }
+        if (wrongCategories['tool'] >= 2) {
+            list.innerHTML += `<li><strong>軟體操作：</strong> Fooocus 設定或 Inpaint 流程不熟，建議複習 Day 4 & 5。</li>`;
+            hasWeakness = true;
+        }
+
+        if (!hasWeakness && finalScore < 100) {
+            list.innerHTML = `<li>整體表現不錯，只有少數粗心錯誤。</li>`;
+        } else if (finalScore === 100) {
+            list.innerHTML = `<li><strong>完美！</strong> 你已經準備好拿滿分了。</li>`;
+        }
+    }
+
+    function restartQuiz() {
+        initQuiz();
+    }
+
+    // Start
+    initQuiz();
+</script>
+
+</body>
+</html>
