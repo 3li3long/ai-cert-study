@@ -73,14 +73,14 @@
             margin: 0 auto;
             overflow: hidden;
             display: flex;
-            align-items: flex-start; /* Changed to start for better scrolling */
+            align-items: flex-start;
             justify-content: center;
             padding: 20px 20px 80px 20px; /* Bottom padding for controls */
         }
 
         .slide {
             position: absolute;
-            top: 20px; /* Add top margin */
+            top: 20px;
             width: 90%;
             height: 85%;
             background: var(--slide-bg);
@@ -1148,13 +1148,6 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
             if (e.key === 'ArrowLeft') changeSlide(-1);
-        });
-
-        let touchStartX = 0;
-        slider.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
-        slider.addEventListener('touchend', e => {
-            if (e.changedTouches[0].screenX < touchStartX - 50) changeSlide(1);
-            if (e.changedTouches[0].screenX > touchStartX + 50) changeSlide(-1);
         });
 
         // Run
