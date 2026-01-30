@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生成式 AI 美術設計認證 - 終極完整講義</title>
+    <title>生成式 AI 美術設計認證 - 終極完整講義 (50+頁詳解版)</title>
     <style>
         :root {
             --primary: #2563eb;
             --secondary: #1e40af;
             --accent: #f59e0b;
-            --adobe: #ff0000;
             --text: #1f2937;
             --bg: #f3f4f6;
             --slide-bg: #ffffff;
@@ -18,7 +17,11 @@
             --nav-text: #e2e8f0;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         body {
             font-family: 'Microsoft JhengHei', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -30,34 +33,36 @@
             flex-direction: column;
         }
 
-        /* Top Navigation Bar */
+        /* Top Navigation Bar (Chapters) */
         .chapter-nav {
             background-color: var(--nav-bg);
             color: var(--nav-text);
             padding: 10px 0;
             display: flex;
             justify-content: center;
-            gap: 8px;
+            gap: 5px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             z-index: 1000;
             overflow-x: auto;
             white-space: nowrap;
-            min-height: 50px;
         }
 
         .chapter-btn {
             background: none;
             border: 1px solid #475569;
             color: #94a3b8;
-            padding: 5px 12px;
+            padding: 5px 15px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             transition: all 0.3s;
         }
-        .chapter-btn:hover, .chapter-btn.active { background-color: var(--primary); color: white; border-color: var(--primary); }
-        .chapter-btn.adobe-btn { border-color: #991b1b; color: #fca5a5; }
-        .chapter-btn.adobe-btn:hover, .chapter-btn.adobe-btn.active { background-color: var(--adobe); color: white; border-color: var(--adobe); }
+
+        .chapter-btn:hover, .chapter-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
 
         /* Slide Container */
         .slide-container {
@@ -70,7 +75,7 @@
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            padding: 20px 20px 80px 20px;
+            padding: 20px 20px 80px 20px; /* Bottom padding for controls */
         }
 
         .slide {
@@ -88,16 +93,56 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
+            /* Scrollbar styling */
             scrollbar-width: thin;
             scrollbar-color: #cbd5e1 transparent;
         }
-        .slide::-webkit-scrollbar { width: 8px; }
-        .slide::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
 
-        .slide.active { opacity: 1; transform: translateX(0); z-index: 10; }
-        .slide.prev { transform: translateX(-100%); opacity: 0; }
+        .slide::-webkit-scrollbar {
+            width: 8px;
+        }
+        .slide::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 4px;
+        }
 
-        .slide-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: right; font-size: 0.9rem; color: #94a3b8; }
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            z-index: 10;
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        /* Content Styling */
+        h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 1.5rem; text-align: center; }
+        h2 { color: var(--secondary); font-size: 1.8rem; margin-bottom: 1.2rem; border-bottom: 3px solid var(--accent); display: inline-block; padding-bottom: 5px; }
+        h3 { color: #334155; font-size: 1.4rem; margin: 1.5rem 0 0.8rem; font-weight: 700; display: flex; align-items: center; }
+        h3::before { content: ''; display: inline-block; width: 8px; height: 24px; background: var(--accent); margin-right: 12px; border-radius: 4px; }
+        p, li { font-size: 1.15rem; line-height: 1.7; margin-bottom: 0.8rem; color: #475569; }
+        ul, ol { padding-left: 28px; margin-bottom: 1.5rem; }
+        strong { color: var(--primary); font-weight: 700; }
+        code { background: #f1f5f9; padding: 2px 8px; border-radius: 4px; color: #d946ef; font-family: monospace; font-weight: bold; border: 1px solid #e2e8f0; }
+
+        .slide-footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            text-align: right;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        /* Boxes */
+        .highlight-box { background: #eff6ff; border-left: 5px solid var(--primary); padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
+        .warning-box { background: #fef2f2; border-left: 5px solid #ef4444; padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
+        .lee-note { background: #f0fdf4; border: 1px solid #86efac; padding: 15px; border-radius: 8px; margin-top: 15px; position: relative; }
+        .lee-note::before { content: '🎓 李宏毅教授重點'; position: absolute; top: -12px; left: 15px; background: #166534; color: white; padding: 2px 10px; font-size: 0.8rem; border-radius: 10px; font-weight: bold; }
+        .exam-tip { background: #fff7ed; border: 2px dashed #f97316; padding: 15px; border-radius: 8px; margin-top: 15px; }
+        .exam-tip-title { color: #c2410c; font-weight: bold; display: block; margin-bottom: 5px; }
 
         /* Controls */
         .controls {
@@ -135,7 +180,7 @@
         /* Floating Exam Button */
         .mock-exam-btn {
             position: fixed;
-            top: 70px;
+            top: 70px; /* Below nav bar */
             right: 20px;
             background-color: var(--btn-color);
             color: white;
@@ -152,43 +197,27 @@
         }
         .mock-exam-btn:hover { transform: translateY(-2px); background-color: #dc2626; }
 
-        /* Content Styling */
-        h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 1.5rem; text-align: center; }
-        h2 { color: var(--secondary); font-size: 1.8rem; margin-bottom: 1.2rem; border-bottom: 3px solid var(--accent); display: inline-block; padding-bottom: 5px; }
-        h3 { color: #334155; font-size: 1.4rem; margin: 1.5rem 0 0.8rem; font-weight: 700; display: flex; align-items: center; }
-        h3::before { content: ''; display: inline-block; width: 8px; height: 24px; background: var(--accent); margin-right: 12px; border-radius: 4px; }
-        p, li { font-size: 1.15rem; line-height: 1.7; margin-bottom: 0.8rem; color: #475569; }
-        ul, ol { padding-left: 28px; margin-bottom: 1.5rem; }
-        strong { color: var(--primary); font-weight: 700; }
-        code { background: #f1f5f9; padding: 2px 8px; border-radius: 4px; color: #d946ef; font-family: monospace; font-weight: bold; border: 1px solid #e2e8f0; }
-        .highlight-box { background: #eff6ff; border-left: 5px solid var(--primary); padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
-        .warning-box { background: #fef2f2; border-left: 5px solid #ef4444; padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
-        .adobe-box { background: #fff1f2; border-left: 5px solid var(--adobe); padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
-        .lee-note { background: #f0fdf4; border: 1px solid #86efac; padding: 15px; border-radius: 8px; margin-top: 15px; position: relative; }
-        .lee-note::before { content: '🎓 李宏毅教授重點'; position: absolute; top: -12px; left: 15px; background: #166534; color: white; padding: 2px 10px; font-size: 0.8rem; border-radius: 10px; font-weight: bold; }
-        .exam-tip { background: #fff7ed; border: 2px dashed #f97316; padding: 15px; border-radius: 8px; margin-top: 15px; }
-        
-        .colab-link-btn { display: inline-block; background-color: #f9ab00; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1.1rem; margin: 10px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s; }
-        .colab-link-btn:hover { transform: translateY(-2px); background-color: #e39b00; }
-
         @media (max-width: 768px) {
+            .chapter-nav { justify-content: flex-start; padding: 10px 15px; }
             .slide { padding: 25px; width: 95%; top: 10px; height: 75%; }
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.5rem; }
             .mock-exam-btn { bottom: 80px; top: auto; right: 20px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Chapter Navigation -->
     <div class="chapter-nav">
         <button class="chapter-btn active" onclick="jumpToChapter(0)">Day 1: AI 原理</button>
         <button class="chapter-btn" onclick="jumpToChapter(10)">Day 2: 擴散模型</button>
         <button class="chapter-btn" onclick="jumpToChapter(20)">Day 3: 法規與美學</button>
-        <button class="chapter-btn" onclick="jumpToChapter(30)">Day 4: Fooocus</button>
-        <button class="chapter-btn adobe-btn" onclick="jumpToChapter(42)">Day 4+: Adobe攻略</button>
-        <button class="chapter-btn" onclick="jumpToChapter(50)">Day 5: 術科必殺</button>
+        <button class="chapter-btn" onclick="jumpToChapter(30)">Day 4: Fooocus 攻略</button>
+        <button class="chapter-btn" onclick="jumpToChapter(42)">Day 5: 術科必殺技</button>
     </div>
 
-    <a href="mock_exam.html" class="mock-exam-btn">📝 開始模擬測驗</a>
+    <a href="mock_exam.html" target="_blank" class="mock-exam-btn">📝 開始模擬測驗</a>
 
     <div class="slide-container" id="slider">
         <!-- Slides will be injected via JS -->
@@ -196,78 +225,850 @@
 
     <div class="controls">
         <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅ 上一頁</button>
-        <span class="progress-text" id="pageNum">1 / 62</span>
+        <span class="progress-text" id="pageNum">1 / 55</span>
         <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">下一頁 ➡</button>
     </div>
 
     <script>
+        // 55+ Slides Content Data
         const slidesData = [
-            // Day 1
-            {t: "Day 1-1: 課程啟動", c: "<h1>🚀 Day 1: AI 核心原理啟動</h1><div class='highlight-box'><p><strong>今日目標：</strong> 理解「AI 到底怎麼思考的？」破解學科最難的理論題。</p><p><strong>特別更新：</strong> 點擊右上角進入題庫，Day 4+ 有 Colab 免安裝連結。</p></div>"},
-            {t: "Day 1-2: 生成式 vs 判別式", c: "<h2>生成式 vs. 判別式</h2><ul><li><strong>判別式 AI：</strong> 分類、預測 (如：人臉辨識、股市)。</li><li><strong>生成式 AI：</strong> 創造新資料 (如：ChatGPT, Stable Diffusion)。</li></ul>"},
-            {t: "Day 1-3: 文字接龍", c: "<h2>LLM 運作：文字接龍</h2><div class='lee-note'><p>李宏毅教授強調：ChatGPT 本質是<strong>「文字接龍機器」</strong>。它計算「下一個字出現的機率」，而不是在思考。</p></div>"},
-            {t: "Day 1-4: Token", c: "<h2>Token (標記)</h2><p>AI 讀不懂文字，它讀的是 Token (數字向量)。</p><div class='exam-tip'><p><strong>考點：</strong> 1 個單字可能由多個 Tokens 組成，Token 不等於字數。</p></div>"},
-            {t: "Day 1-5: 預訓練", c: "<h2>第一階段：Pre-training</h2><p>讓 AI 讀海量資料。產出：<strong>Base Model (基底模型)</strong>。懂很多但不會對話。</p>"},
-            {t: "Day 1-6: 指令微調", c: "<h2>第二階段：SFT</h2><p>Instruction Fine-tuning (指令微調)。教 AI 聽懂指令，變成有問必答。</p>"},
-            {t: "Day 1-7: RLHF", c: "<h2>第三階段：RLHF</h2><p>Reinforcement Learning from Human Feedback。讓 AI 對齊人類價值觀 (禮貌、安全)。</p>"},
-            {t: "Day 1-8: 幻覺", c: "<h2>幻覺 (Hallucination)</h2><p>因為 AI 是機率模型，遇到不知道的事，會依機率「一本正經胡說八道」。</p>"},
-            {t: "Day 1-9: Prompt", c: "<h2>提示工程</h2><ul><li><strong>Zero-shot：</strong> 不給範例直接問。</li><li><strong>Few-shot (In-context)：</strong> 給範例讓 AI 模仿。</li><li><strong>CoT：</strong> 請 AI「一步步思考」。</li></ul>"},
-            {t: "Day 1-10: 小結", c: "<h2>Day 1 重點</h2><p>AI 是機率模型、Token 是單位、RLHF 學做人、幻覺是機率副作用。</p>"},
-            
-            // Day 2
-            {t: "Day 2-1: 擴散模型", c: "<h1>🎨 Day 2: 擴散模型詳解</h1><div class='highlight-box'><p>搞懂 Stable Diffusion 背後的黑魔法。</p></div>"},
-            {t: "Day 2-2: 原理", c: "<h2>擴散模型 (Diffusion)</h2><p><strong>逆向去噪 (Reverse Diffusion)：</strong> 從全雜訊 (雪花圖) 中，一步步移除雜訊，還原出影像。</p>"},
-            {t: "Day 2-3: 流程", c: "<h2>生成三元件</h2><ol><li><strong>CLIP：</strong> 看懂文字。</li><li><strong>U-Net：</strong> 負責去噪運算 (在 Latent Space)。</li><li><strong>VAE：</strong> 把算好的特徵解碼成圖片。</li></ol>"},
-            {t: "Day 2-4: Steps & CFG", c: "<h2>關鍵參數</h2><ul><li><strong>Steps (步數)：</strong> 20-40 最佳。</li><li><strong>CFG Scale：</strong> 7-12 最佳。太高會過曝崩壞。</li></ul>"},
-            {t: "Day 2-5: Seed & Sampler", c: "<h2>Seed & Sampler</h2><ul><li><strong>Seed：</strong> 固定種子碼 = 重現圖片。</li><li><strong>Sampler：</strong> 推薦 <code>DPM++ 2M Karras</code> (Fooocus 預設)。</li></ul>"},
-            {t: "Day 2-6: Prompt 公式", c: "<h2>萬用公式</h2><p><code>(主體) + (動作) + (服裝) + (背景) + (風格) + (光影) + (品質詞)</code></p>"},
-            {t: "Day 2-7: 權重", c: "<h2>權重語法</h2><ul><li><code>(keyword)</code>：增強 1.1 倍。</li><li><code>(keyword:1.5)</code>：指定增強。</li><li><code>[keyword]</code>：減弱。</li></ul>"},
-            {t: "Day 2-8: Negative", c: "<h2>負面提示詞</h2><p><code>low quality, bad hands, missing fingers, text, watermark</code></p>"},
-            {t: "Day 2-9: LoRA", c: "<h2>LoRA 模型</h2><p>輕量化微調。用於固定角色或畫風。權重建議 0.6 ~ 0.8。</p>"},
-            {t: "Day 2-10: 小結", c: "<h2>Day 2 重點</h2><p>Diffusion = 去噪。CLIP = 翻譯。Seed = 重現。</p>"},
+            // --- Day 1: AI 基礎與原理 (李宏毅觀點) ---
+            {
+                title: "Day 1-1: 課程啟動與目標",
+                content: `
+                    <h1>🚀 Day 1: AI 核心原理啟動</h1>
+                    <div class="highlight-box">
+                        <p><strong>今日目標：</strong> 理解「AI 到底怎麼思考的？」破解學科最難的理論題。</p>
+                        <p><strong>參考來源：</strong> 李宏毅教授 GenAI 導論 (第1-3講)</p>
+                    </div>
+                    <h3>本日學習清單：</h3>
+                    <ul>
+                        <li>生成式 AI vs. 判別式 AI</li>
+                        <li>Token (標記) 的真實面貌</li>
+                        <li>Transformer 與文字接龍</li>
+                        <li>LLM 訓練三階段 (Pre-train, SFT, RLHF)</li>
+                        <li>幻覺 (Hallucination) 的成因</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 1-2: 生成式 AI 的本質",
+                content: `
+                    <h2>生成式 vs. 判別式</h2>
+                    <p>這是 AI 領域的兩大分支，考試常考比較。</p>
+                    
+                    <h3>1. 判別式 AI (Discriminative)</h3>
+                    <ul>
+                        <li><strong>功能：</strong> 分類、預測數值。</li>
+                        <li><strong>例子：</strong> 貓狗辨識器、垃圾郵件過濾、股市預測。</li>
+                        <li><strong>本質：</strong> 尋找決策邊界 (Decision Boundary)。</li>
+                    </ul>
 
-            // Day 3
-            {t: "Day 3-1: 法規", c: "<h1>⚖️ Day 3: 法規與美學</h1><div class='warning-box'><p><strong>必考陷阱：</strong> 著作權與侵權判定。</p></div>"},
-            {t: "Day 3-2: 著作權", c: "<h2>著作權歸屬</h2><ul><li>❌ <strong>純 AI 生成：</strong> 無著作權。</li><li>⭕ <strong>人機協作：</strong> 人類精修部分受保護。</li></ul>"},
-            {t: "Day 3-3: 侵權", c: "<h2>侵權風險</h2><p>若產出圖與原圖 (如米老鼠) <strong>實質相似</strong>，即構成侵權。不管是不是 AI 算的。</p>"},
-            {t: "Day 3-4: 倫理", c: "<h2>Deepfake 與偏見</h2><ul><li><strong>Deepfake：</strong> 換臉詐欺或色情影片涉及刑責。</li><li><strong>Bias：</strong> AI 會有性別/種族刻板印象。</li></ul>"},
-            {t: "Day 3-5: 排版", c: "<h2>C.R.A.P. 原則</h2><p>對比 (Contrast)、重複 (Repetition)、對齊 (Alignment)、親密性 (Proximity)。</p>"},
-            {t: "Day 3-6: 留白", c: "<h2>留白 (White Space)</h2><p>Prompt: <code>clean background, negative space</code>。為了放文字標題。</p>"},
-            {t: "Day 3-7: 色彩", c: "<h2>色彩學</h2><ul><li><strong>互補色：</strong> 對比強 (紅配綠)。</li><li><strong>暖色：</strong> 熱情。冷色：科技。</li></ul>"},
-            {t: "Day 3-8: 格式", c: "<h2>檔案格式</h2><ul><li><strong>JPG：</strong> 破壞性壓縮，無透明。</li><li><strong>PNG：</strong> 支援透明背景 (去背用)。</li><li><strong>300 dpi：</strong> 印刷用。</li></ul>"},
-            {t: "Day 3-9: 規避", c: "<h2>規避技巧</h2><p>使用 ControlNet (Canny) 取構圖重繪，降低侵權風險。</p>"},
-            {t: "Day 3-10: 小結", c: "<h2>Day 3 重點</h2><p>純 AI 無版權。去背存 PNG。Deepfake 違法。</p>"},
+                    <h3>2. 生成式 AI (Generative)</h3>
+                    <ul>
+                        <li><strong>功能：</strong> 創造新的資料 (文字、圖片、聲音)。</li>
+                        <li><strong>例子：</strong> ChatGPT, Stable Diffusion, Midjourney。</li>
+                        <li><strong>本質：</strong> 學習資料的機率分佈 (Probability Distribution)。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 1-3: 文字接龍 (Next Token Prediction)",
+                content: `
+                    <h2>LLM 的大腦運作：文字接龍</h2>
+                    <div class="lee-note">
+                        <p>李宏毅教授強調：ChatGPT 其實是一個超強的<strong>「文字接龍機器」</strong>。它並不是在「思考」問題的答案，而是在計算「接下來出現哪個字機率最高」。</p>
+                    </div>
+                    <h3>運作邏輯：</h3>
+                    <ol>
+                        <li>輸入：<code>今天天氣真</code></li>
+                        <li>計算：AI 預測下一個字的機率表 (好: 70%, 壞: 20%, 奇怪: 10%)。</li>
+                        <li>輸出：依照機率或隨機性選出 <code>好</code>。</li>
+                        <li>迴圈：將 <code>今天天氣真好</code> 當作新輸入，繼續預測下一個字。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 1-4: 關鍵概念 - Token",
+                content: `
+                    <h2>什麼是 Token (標記)？</h2>
+                    <p>AI 讀不懂人類的「文字」，它讀的是數字向量。</p>
+                    
+                    <h3>Token ≠ 單字</h3>
+                    <ul>
+                        <li><strong>英文：</strong> 常見單字 = 1 Token (如 "apple")；罕見字 = 多個 Tokens。</li>
+                        <li><strong>中文：</strong> 通常 1 個中文字 = 1~2 個 Tokens。</li>
+                        <li><strong>運作：</strong> 文字 ➔ Tokenizer (分詞器) ➔ ID 列表 ➔ 進入模型。</li>
+                    </ul>
 
-            // Day 4
-            {t: "Day 4-1: Fooocus", c: "<h1>🛠️ Day 4: Fooocus 攻略</h1><div class='highlight-box'><p>考試指定軟體，極簡版 SDXL。</p></div>"},
-            {t: "Day 4-1+ (免安裝): Google Colab", c: "<h2>⚡ 懶人專用：Fooocus Colab 一鍵啟動</h2><p>考試現場雖然會提供軟體，但為了在家練習，推薦使用 Google Colab。</p><a href='https://colab.research.google.com/github/lllyasviel/Fooocus/blob/main/fooocus_colab.ipynb' target='_blank' class='colab-link-btn'>🚀 點擊這裡：開啟 Fooocus (Colab)</a><h3>操作步驟：</h3><ol><li>點擊上方橘色按鈕 (會開新視窗)。</li><li>登入 Google 帳號。</li><li>點擊左上角的 <strong>\"Play (三角形)\"</strong> 按鈕。</li><li>等待 5-10 分鐘，直到出現 <code>gradio.live</code> 網址，點進去就是了！</li></ol>"},
-            {t: "Day 4-2: Setting", c: "<h2>Setting 設定</h2><p>記得勾 Advanced。Performance 選 Quality。Aspect Ratio 看題目要求。</p>"},
-            {t: "Day 4-3: Style", c: "<h2>Style 風格</h2><p>Fooocus 神器。直接勾選 <code>SAI-3D</code> (卡通) 或 <code>Cinematic</code> (寫實)。不用自己寫 Prompt。</p>"},
-            {t: "Day 4-4: Model", c: "<h2>Model & LoRA</h2><p>Base Model 選 Juggernaut (寫實) 或 BluePencil (動漫)。LoRA 權重設 0.5-0.8。</p>"},
-            {t: "Day 4-5: Upscale", c: "<h2>Upscale & Vary</h2><ul><li><strong>Upscale：</strong> 放大。</li><li><strong>Vary (Subtle)：</strong> 微調表情。</li><li><strong>Vary (Strong)：</strong> 換姿勢。</li></ul>"},
-            {t: "Day 4-6: Image Prompt", c: "<h2>Image Prompt (墊圖)</h2><p><strong>PyraCanny：</strong> 抓邊緣 (線稿上色)。<br><strong>FaceSwap：</strong> 換臉。<br><strong>CPDS：</strong> 抓景深結構。</p>"},
-            {t: "Day 4-7: PyraCanny", c: "<h2>PyraCanny 實戰</h2><p>上傳草圖 -> 勾 PyraCanny -> 輸入 Prompt -> 生成全彩圖。</p>"},
-            {t: "Day 4-8: FaceSwap", c: "<h2>FaceSwap 實戰</h2><p>上傳明星照 -> 勾 FaceSwap -> 生成。保留動作但換臉。</p>"},
-            {t: "Day 4-9: Inpaint", c: "<h2>Inpaint 預習</h2><p>修手、換衣服專用。塗哪裡修哪裡。</p>"},
-            {t: "Day 4-10: 小結", c: "<h2>Day 4 重點</h2><p>善用 Style 勾選。Image Prompt 是 ControlNet 的簡化版。</p>"},
+                    <div class="exam-tip">
+                        <span class="exam-tip-title">🔥 考題陷阱</span>
+                        <p>問：為什麼 AI 有時候算數會算錯，或者玩文字接龍(如成語)會失敗？<br>
+                        答：因為它看到的是 Token ID，而不是字形或字義，有時候分詞方式會切斷數字或語意。</p>
+                    </div>
+                `
+            },
+            {
+                title: "Day 1-5: 訓練三階段 (1) - 預訓練",
+                content: `
+                    <h2>LLM 養成記：第一階段 Pre-training</h2>
+                    <p>想像一個嬰兒，讓他讀完整個圖書館的書。</p>
 
-            // Day 4+
-            {t: "Day 4+: Adobe & Colab", c: "<h1>🔥 Day 4+: Adobe & Colab</h1><div class='adobe-box'><p>補強 Adobe 雲端工具與免安裝練習法。</p></div>"},
-            {t: "Day 4+: Firefly", c: "<h2>Adobe Firefly</h2><p>支援中文 Prompt。<strong>生成填色 (Generative Fill)</strong> 是強項。</p>"},
-            {t: "Day 4+: PS Web 去背", c: "<h2>PS Web: 移除物件</h2><p>選取物件 -> 點 Generative Fill -> <strong>留空不打字</strong> -> 生成。</p>"},
-            {t: "Day 4+: PS Web 擴充", c: "<h2>PS Web: 生成擴充</h2><p>裁切工具拉大畫布 -> Generative Expand -> 生成。</p>"},
-            {t: "Day 4+: 比較", c: "<h2>怎麼選？</h2><p>畫圖/修手用 Fooocus。去背/擴充/合成用 Adobe。</p>"},
-            {t: "Day 4+: 小結", c: "<h2>Adobe 重點</h2><p>移除物件要留空。擴充用 Crop Tool。</p>"},
+                    <h3>過程：</h3>
+                    <ul>
+                        <li><strong>資料量：</strong> 海量 (網際網路所有文字)。</li>
+                        <li><strong>學習方式：</strong> 自監督學習 (Self-supervised)。遮住下一個字，讓 AI 猜。</li>
+                        <li><strong>產出：</strong> <strong>Base Model (基底模型)</strong>。</li>
+                    </ul>
 
-            // Day 5
-            {t: "Day 5-1: 必殺技", c: "<h1>🎨 Day 5: 術科必殺技</h1><div class='highlight-box'><p>修手、換裝、擴圖。</p></div>"},
-            {t: "Day 5-2: 修手", c: "<h2>必殺一：修手</h2><p>Inpaint 塗手 -> Prompt: <code>detailed hand, 5 fingers</code> -> 生成。</p>"},
-            {t: "Day 5-3: 換裝", c: "<h2>必殺二：換裝</h2><p>Inpaint 塗衣服 -> Prompt: <code>blue suit</code> -> 生成。</p>"},
-            {t: "Day 5-4: 擴圖", c: "<h2>必殺三：Outpaint</h2><p>Fooocus 的 Inpaint/Outpaint 分頁 -> 選擇方向 (Right/Left) -> 生成。</p>"},
-            {t: "Day 5-5: 描述", c: "<h2>必殺四：Describe</h2><p>不知道風格？上傳圖片到 Describe -> 反推 Prompt。</p>"},
-            {t: "Day 5-6: SOP", c: "<h2>考試 SOP</h2><p>讀題 -> 選 Style -> 寫 Prompt -> 生成 4 張 -> 選一張修手 -> Upscale 放大 -> 存檔。</p>"},
-            {t: "Day 5-7: 檢查", c: "<h2>最後檢查</h2><p>手指對嗎？解析度夠嗎？格式對嗎？</p>"},
-            {t: "Day 5-8: 結語", c: "<h1>🎓 準備好了！</h1><p>點擊右上角按鈕，開始 100 題模擬測驗吧！祝高分通過！</p>"}
+                    <div class="lee-note">
+                        <p><strong>Base Model 的特性：</strong> 知識淵博但不會講話。如果你問它「台灣最高的山是？」，它可能會接龍「...高度為3952公尺」(因為網頁文字常這樣寫)，而不是回答你。</p>
+                    </div>
+                `
+            },
+            {
+                title: "Day 1-6: 訓練三階段 (2) - 指令微調",
+                content: `
+                    <h2>LLM 養成記：第二階段 Instruction Fine-tuning</h2>
+                    <p>教導 AI 聽懂人類的「指令」，變成有問必答的助理。</p>
+
+                    <h3>過程：</h3>
+                    <ul>
+                        <li><strong>資料量：</strong> 少量，但品質極高 (人工撰寫的問答對)。</li>
+                        <li><strong>技術：</strong> SFT (Supervised Fine-Tuning 監督式微調)。</li>
+                        <li><strong>例子：</strong> <br>
+                        人：翻譯這句話。<br>
+                        AI：好的，結果是...</li>
+                    </ul>
+                    <p>經過這階段，AI 終於能正常對話了。</p>
+                `
+            },
+            {
+                title: "Day 1-7: 訓練三階段 (3) - RLHF",
+                content: `
+                    <h2>LLM 養成記：第三階段 RLHF</h2>
+                    <p>這是讓 AI 變得「像人」且「安全」的關鍵。</p>
+
+                    <h3>RLHF (Reinforcement Learning from Human Feedback)</h3>
+                    <ul>
+                        <li><strong>人類回饋的強化學習：</strong> 請人類對 AI 的多個回答評分 (哪個比較好？哪個有禮貌？)。</li>
+                        <li><strong>Reward Model (獎勵模型)：</strong> 訓練一個「老師模型」模仿人類的評分標準。</li>
+                        <li><strong>PPO (近端策略優化)：</strong> 用老師模型來訓練 AI，讓它盡量產出高分回答。</li>
+                    </ul>
+
+                    <div class="exam-tip">
+                        <span class="exam-tip-title">🔥 考題重點</span>
+                        <p>ChatGPT 之所以會有禮貌、不回答製作炸彈的方法，主要歸功於 <strong>RLHF</strong> 階段的對齊 (Alignment)。</p>
+                    </div>
+                `
+            },
+            {
+                title: "Day 1-8: 幻覺 (Hallucination)",
+                content: `
+                    <h2>AI 的一本正經胡說八道：幻覺</h2>
+                    <p>這是學科考試中關於「AI 限制」的必考題。</p>
+
+                    <h3>為什麼會有幻覺？</h3>
+                    <div class="lee-note">
+                        <p>因為 AI 的本質是<strong>機率生成</strong>，而非資料庫檢索。當它遇到訓練資料中沒有的資訊，它會依照機率「編造」一個看起來最通順的句子。</p>
+                    </div>
+
+                    <h3>特徵：</h3>
+                    <ul>
+                        <li>語氣非常自信。</li>
+                        <li>內容與事實完全不符。</li>
+                        <li>常發生在詢問特定冷門數據、傳記或引用文獻時。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 1-9: 提示工程基礎 (Prompting)",
+                content: `
+                    <h2>如何與 AI 溝通？</h2>
+                    <p>Prompt (提示詞) 是引導 AI 生成結果的指令。</p>
+
+                    <h3>兩大類 Prompting 技巧：</h3>
+                    <ol>
+                        <li><strong>Zero-shot (零樣本)：</strong> 直接問，不給範例。<br>
+                        <em>例：「請將以下翻譯成英文...」</em></li>
+                        <li><strong>Few-shot (少樣本) / In-context Learning：</strong> 給幾個範例讓 AI 模仿。<br>
+                        <em>例：「蘋果->紅色, 香蕉->黃色, 葡萄->?」</em></li>
+                    </ol>
+
+                    <p><strong>Chain of Thought (CoT, 思維鏈)：</strong><br>
+                    要求 AI 「一步步思考 (Let's think step by step)」，能顯著提升數學或邏輯題的準確率。</p>
+                `
+            },
+            {
+                title: "Day 1-10: Day 1 複習與總結",
+                content: `
+                    <h2>Day 1 重點回顧</h2>
+                    <ul>
+                        <li>AI 是一個<strong>機率模型</strong>，不是知識庫。</li>
+                        <li><strong>Token</strong> 是運算單位，不等於單字。</li>
+                        <li>訓練三部曲：<strong>Pre-train (讀書) -> SFT (學對話) -> RLHF (學做人)</strong>。</li>
+                        <li><strong>幻覺</strong>是機率生成的副作用。</li>
+                    </ul>
+                    <hr>
+                    <p style="text-align: center; font-size: 1.5rem;">🎉 Day 1 完成！準備進入 Day 2：繪圖 AI 原理。</p>
+                `
+            },
+
+            // --- Day 2: 擴散模型與 Prompt 詳解 ---
+            {
+                title: "Day 2-1: 影像生成原理",
+                content: `
+                    <h1>🎨 Day 2: 擴散模型與 Prompt 詳解</h1>
+                    <div class="highlight-box">
+                        <p><strong>今日目標：</strong> 搞懂 Stable Diffusion 背後的黑魔法，以及如何寫出電腦看得懂的咒語。</p>
+                        <p><strong>參考來源：</strong> 李宏毅教授 GenAI 導論 (第9講)</p>
+                    </div>
+                `
+            },
+            {
+                title: "Day 2-2: 擴散模型 (Diffusion Model) 概念",
+                content: `
+                    <h2>擴散模型：從雜訊中看見世界</h2>
+                    <p>目前主流繪圖 AI (Stable Diffusion, Midjourney, DALL-E 3) 皆使用此技術。</p>
+
+                    <h3>核心概念：</h3>
+                    <ul>
+                        <li><strong>Forward Diffusion (加噪)：</strong> 把一張清晰照片，慢慢加入雜訊，直到變成完全看不懂的雪花圖 (Gaussian Noise)。</li>
+                        <li><strong>Reverse Diffusion (去噪)：</strong> AI 學習如何「逆向操作」，從雪花圖中一步步移除雜訊，還原出影像。</li>
+                    </ul>
+
+                    <div class="lee-note">
+                        <p><strong>雕刻的比喻：</strong> 想像一塊石頭 (雜訊)，AI 是一個雕刻家 (Denoising U-Net)，根據你的指令 (Prompt)，一刀刀削去多餘的部分 (去噪)，最後呈現出作品。</p>
+                    </div>
+                `
+            },
+            {
+                title: "Day 2-3: 圖像生成流程詳解",
+                content: `
+                    <h2>Text-to-Image 內部發生了什麼？</h2>
+                    <p>當你輸入 "A cat" 時，系統經歷了三個主要元件：</p>
+
+                    <ol>
+                        <li><strong>Text Encoder (文字編碼器 - CLIP)：</strong><br>
+                        將你的文字 "A cat" 轉換成 AI 看得懂的向量數據。它理解 "Cat" 和 "Dog" 是不同的，但和 "Kitten" 很像。</li>
+                        <li><strong>Generation Model (生成模型 - U-Net + Noise Predictor)：</strong><br>
+                        在潛在空間 (Latent Space) 進行去噪運算。它預測「現在這個雜訊裡，哪部分是多餘的？」然後減掉它。</li>
+                        <li><strong>Decoder (解碼器 - VAE)：</strong><br>
+                        將處理完的潛在空間數據，放大並翻譯回人類看得到的像素圖片。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 2-4: 關鍵參數 (1) - Steps & CFG",
+                content: `
+                    <h2>控制 AI 的旋鈕：Steps 與 CFG</h2>
+                    <p>這在 Fooocus 的 Advanced 選項中很重要。</p>
+
+                    <h3>Sampling Steps (步數)</h3>
+                    <ul>
+                        <li><strong>定義：</strong> 去噪的次數。</li>
+                        <li><strong>影響：</strong> 
+                            <ul><li>太少 (< 10)：圖片模糊、充滿雜訊。</li>
+                            <li>適中 (20-40)：細節完整，CP值最高。</li>
+                            <li>太多 (> 60)：邊際效應遞減，浪費時間，有時反而產生怪異紋理。</li></ul>
+                        </li>
+                    </ul>
+
+                    <h3>CFG Scale (Guidance Scale)</h3>
+                    <ul>
+                        <li><strong>定義：</strong> AI 多聽你的話。</li>
+                        <li><strong>數值：</strong> 
+                            <ul><li>低 (1-4)：AI 自由發揮，創意高但可能離題。</li>
+                            <li>中 (7-12)：<strong>標準值</strong>，平衡創意與指令。</li>
+                            <li>高 (> 15)：嚴格遵守指令，但畫面容易過曝、僵硬。</li></ul>
+                        </li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 2-5: 關鍵參數 (2) - Seed & Sampler",
+                content: `
+                    <h2>控制 AI 的旋鈕：Seed 與 Sampler</h2>
+
+                    <h3>Seed (隨機與固定的鑰匙)</h3>
+                    <ul>
+                        <li><strong>原理：</strong> 初始雜訊的亂數種子。</li>
+                        <li><strong>應用：</strong> 如果你想「重現」剛剛那張圖，只是想微調手指，必須<strong>固定 Seed 碼</strong>。</li>
+                        <li><strong>隨機：</strong> 設定為 -1 通常代表隨機。</li>
+                    </ul>
+
+                    <h3>Sampler (採樣器)</h3>
+                    <ul>
+                        <li><strong>定義：</strong> 去噪時使用的數學演算法。</li>
+                        <li><strong>Euler a：</strong> 速度快，充滿不確定性 (Steps 增加圖會變)。</li>
+                        <li><strong>DPM++ 2M Karras：</strong> 目前最主流，品質高且穩定，Fooocus 預設常用。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 2-6: Prompt 萬用公式",
+                content: `
+                    <h2>咒語怎麼念？萬用結構公式</h2>
+                    <p>不要寫句子 (A boy is playing...)，要寫標籤 (Tags)。</p>
+
+                    <div class="highlight-box">
+                        <h3>公式：</h3>
+                        <p><strong>(主體) + (動作/姿勢) + (服裝/外觀) + (環境/背景) + (風格/媒介) + (光影/視角) + (品質詞)</strong></p>
+                    </div>
+
+                    <h3>範例：</h3>
+                    <p><code>1girl, solo, sitting, reading book, school uniform, library background, anime style, makoto shinkai style, cinematic lighting, 8k, best quality</code></p>
+                `
+            },
+            {
+                title: "Day 2-7: 權重語法 (Emphasis)",
+                content: `
+                    <h2>如何讓 AI 知道什麼重要？</h2>
+                    <p>在 Fooocus / Stable Diffusion 中的語法：</p>
+
+                    <h3>增強 (Emphasis)</h3>
+                    <ul>
+                        <li><code>(keyword)</code>：增強 1.1 倍。</li>
+                        <li><code>((keyword))</code>：增強 1.1 x 1.1 = 1.21 倍。</li>
+                        <li><code>(keyword:1.5)</code>：直接指定增強 1.5 倍 (小心畫面炸掉)。</li>
+                        <li><em>用途：強調主角、特定顏色。</em></li>
+                    </ul>
+
+                    <h3>減弱 (De-emphasis)</h3>
+                    <ul>
+                        <li><code>[keyword]</code>：減弱 0.9 倍。</li>
+                        <li><code>(keyword:0.8)</code>：指定減弱。</li>
+                        <li><em>用途：讓某些元素變淡，例如背景太搶眼時。</em></li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 2-8: 負面提示詞 (Negative Prompt)",
+                content: `
+                    <h2>我不想要的東西：Negative Prompt</h2>
+                    <p>這是提升畫質的關鍵，告訴 AI 「不要畫什麼」。</p>
+
+                    <h3>必備通用的負面詞 (背下來/存下來)：</h3>
+                    <p><code>low quality, worst quality, normal quality, jpeg artifacts, signature, watermark, username, blur, text, error</code></p>
+
+                    <h3>人體修復專用：</h3>
+                    <p><code>bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst face, deformed</code></p>
+
+                    <div class="exam-tip">
+                        <p>Fooocus 通常會自動加入一組內建的 Negative Prompt，但考試若發現手壞掉，請手動在 Negative 欄位加強 <code>bad hands</code>。</p>
+                    </div>
+                `
+            },
+            {
+                title: "Day 2-9: LoRA 模型",
+                content: `
+                    <h2>外掛模組：LoRA (Low-Rank Adaptation)</h2>
+                    <p>學科與術科都會考。</p>
+
+                    <h3>它是什麼？</h3>
+                    <ul>
+                        <li><strong>輕量化微調：</strong> 不需要重新訓練整個大模型 (Checkpoint)，只要訓練一小部分參數。</li>
+                        <li><strong>用途：</strong> 固定「特定角色」(如：初音未來)、固定「特定畫風」(如：盲盒風、水墨風)、固定「特定物件」。</li>
+                    </ul>
+
+                    <h3>使用技巧：</h3>
+                    <ul>
+                        <li><strong>權重 (Weight)：</strong> 建議 0.6 ~ 0.8。</li>
+                        <li><strong>觸發詞 (Trigger Word)：</strong> 每個 LoRA 通常有一個啟動鑰匙 (如 <code>miku</code>)，必須寫在 Prompt 裡才有效。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 2-10: Day 2 總結",
+                content: `
+                    <h2>Day 2 重點回顧</h2>
+                    <ul>
+                        <li><strong>Diffusion</strong> 是去噪過程 (Denoising)。</li>
+                        <li><strong>CLIP</strong> 是負責看懂文字的翻譯官。</li>
+                        <li><strong>Steps</strong> 約 20-30，<strong>CFG</strong> 約 7。</li>
+                        <li><strong>Seed</strong> 控制隨機性。</li>
+                        <li>Prompt 記得用 <code>()</code> 加權重，<code>Negative</code> 避開爛手。</li>
+                    </ul>
+                    <hr>
+                    <p style="text-align: center; font-size: 1.5rem;">🎉 Day 2 完成！準備進入 Day 3：法規與美學。</p>
+                `
+            },
+
+            // --- Day 3: 法規與美學 ---
+            {
+                title: "Day 3-1: 法律與美學篇",
+                content: `
+                    <h1>⚖️ Day 3: 法律倫理與設計美學</h1>
+                    <div class="highlight-box">
+                        <p><strong>今日目標：</strong> 掌握學科中最容易混淆的法律邊界，以及術科海報設計的加分邏輯。</p>
+                        <p><strong>參考來源：</strong> AIGO Senior 法規資源、Canva 設計原理</p>
+                    </div>
+                `
+            },
+            {
+                title: "Day 3-2: 著作權基礎 (1)",
+                content: `
+                    <h2>AI 生成圖有著作權嗎？(台灣見解)</h2>
+                    <div class="warning-box">
+                        <p><strong>核心原則：</strong> 著作權法保護的是「人類的精神創作」。</p>
+                    </div>
+
+                    <h3>情境判斷：</h3>
+                    <ul>
+                        <li><strong>純 AI 生成：</strong> ❌ <strong>無著作權</strong>。無論你 Prompt 寫得多複雜，如果只是按下生成，目前傾向視為「人機互動的結果」，非人類創作。</li>
+                        <li><strong>人機協作 (大幅度)：</strong> ⭕ <strong>有著作權 (保護人為部分)</strong>。例如：生成後，人類用 PS 進行大量精修、合成、繪製細節，則該「後製部分」受保護。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 3-3: 著作權基礎 (2) - 侵權",
+                content: `
+                    <h2>我會侵權嗎？</h2>
+                    <p>使用 AI 也可能被告，請小心。</p>
+
+                    <h3>侵權風險來源：</h3>
+                    <ol>
+                        <li><strong>圖生圖 (Img2Img)：</strong>
+                            如果你拿一張有版權的「米老鼠」圖，用 AI 改成 3D 版，但保留了米老鼠的核心特徵。
+                            <br>➡ 可能侵害<strong>「重製權」</strong>或<strong>「改作權」</strong>。</li>
+                        <li><strong>LoRA 訓練：</strong>
+                            未經授權使用畫師的圖去訓練 LoRA，目前法律尚在模糊地帶，但道德上有爭議，商業應用極高風險。</li>
+                    </ol>
+
+                    <div class="exam-tip">
+                        <p>考題若問：「小明使用 AI 生成了一張與知名漫畫角色一模一樣的圖並販售」，答案通常是<strong>侵權</strong>。</p>
+                    </div>
+                `
+            },
+            {
+                title: "Day 3-4: 倫理議題 - Deepfake 與偏見",
+                content: `
+                    <h2>Deepfake (深偽技術)</h2>
+                    <ul>
+                        <li><strong>定義：</strong> 利用 AI 換臉、變聲。</li>
+                        <li><strong>法律：</strong> 台灣已修法。製作他人色情換臉影片、詐欺，皆有刑事責任。</li>
+                    </ul>
+
+                    <h2>Bias (偏見)</h2>
+                    <ul>
+                        <li><strong>定義：</strong> AI 反映了訓練資料中的刻板印象。</li>
+                        <li><strong>例子：</strong> 生成 "Doctor" 大多是男性，生成 "Nurse" 大多是女性。</li>
+                        <li><strong>對策：</strong> 在 Prompt 中明確指定性別、種族 (e.g., "female doctor")。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 3-5: 設計原理 (1) - C.R.A.P.",
+                content: `
+                    <h2>排版四大原則 (C.R.A.P.)</h2>
+                    <p>術科做海報時的評分隱形標準。</p>
+
+                    <ul>
+                        <li><strong>Contrast (對比)：</strong> 標題要大、粗、顏色明顯。背景若是深色，字就要淺色。</li>
+                        <li><strong>Repetition (重複)：</strong> 標題字體統一，裝飾元素風格統一，讓畫面有一致性。</li>
+                        <li><strong>Alignment (對齊)：</strong> 文字不要亂飄。置中或靠左對齊要明確。</li>
+                        <li><strong>Proximity (親密性)：</strong> 相關的資訊 (如日期、地點) 靠在一起，不相關的拉開距離。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 3-6: 設計原理 (2) - 留白與構圖",
+                content: `
+                    <h2>留白 (White Space)</h2>
+                    <p><strong>重要考點！</strong></p>
+                    <ul>
+                        <li>不要把畫面塞滿。</li>
+                        <li>生成海報底圖時，Prompt 可以加 <code>clean background</code>, <code>negative space</code>, <code>minimalist</code>。</li>
+                        <li><strong>目的：</strong> 為了讓之後壓上去的文字標題能被看見。</li>
+                    </ul>
+
+                    <h2>三分法構圖 (Rule of Thirds)</h2>
+                    <ul>
+                        <li>將畫面切成九宮格。</li>
+                        <li>主體放在線條交叉點上，比放在正中間更有美感。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 3-7: 色彩學基礎",
+                content: `
+                    <h2>色彩搭配技巧</h2>
+                    <p>AI 生成時可以指定配色 (Color Palette)。</p>
+
+                    <ul>
+                        <li><strong>互補色 (Complementary)：</strong> 色環對面 (紅配綠、藍配橘)。對比強烈，適合吸睛海報。</li>
+                        <li><strong>相似色 (Analogous)：</strong> 色環隔壁 (藍配紫、紅配橘)。和諧舒服，適合背景。</li>
+                        <li><strong>暖色 vs. 冷色：</strong>
+                            <ul>
+                                <li>暖色 (紅黃橘)：熱情、食物、特價。</li>
+                                <li>冷色 (藍綠紫)：科技、專業、冷靜。</li>
+                            </ul>
+                        </li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 3-8: 圖像格式與解析度",
+                content: `
+                    <h2>數位圖檔知識</h2>
+                    <p>考試存檔必知。</p>
+
+                    <ul>
+                        <li><strong>JPG：</strong> 破壞性壓縮，檔案小，不支援透明背景。適合一般照片。</li>
+                        <li><strong>PNG：</strong> 非破壞性壓縮，<strong>支援透明背景</strong>。去背後的圖一定要存 PNG。</li>
+                        <li><strong>DPI (解析度)：</strong> 
+                            <ul><li>螢幕顯示：72 dpi。</li>
+                            <li>印刷需求：300 dpi。</li></ul>
+                        </li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 3-9: 實戰應用 - 規避版權",
+                content: `
+                    <h2>如何在考試中安全使用參考圖？</h2>
+                    <p>如果不確定版權，使用 <strong>Image Prompt (墊圖)</strong> 時：</p>
+
+                    <ol>
+                        <li><strong>降低權重：</strong> Image Weight (Stop At) 不要設太高，只取構圖不取細節。</li>
+                        <li><strong>使用 ControlNet (Canny/Depth)：</strong> 只提取線條或深度資訊，重新上色與生成內容。這樣屬於「轉換性使用」，侵權風險較低。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 3-10: Day 3 總結",
+                content: `
+                    <h2>Day 3 重點回顧</h2>
+                    <ul>
+                        <li>純 AI 生成 = <strong>無著作權</strong>。</li>
+                        <li>Deepfake 換臉涉及刑事責任。</li>
+                        <li>排版原則：<strong>對比、對齊、留白</strong>。</li>
+                        <li>去背要存 <strong>PNG</strong>。</li>
+                    </ul>
+                    <hr>
+                    <p style="text-align: center; font-size: 1.5rem;">🎉 Day 3 完成！準備進入 Day 4：Fooocus 軟體攻略。</p>
+                `
+            },
+
+            // --- Day 4: Fooocus 軟體全攻略 ---
+            {
+                title: "Day 4-1: Fooocus 介面導覽",
+                content: `
+                    <h1>🛠️ Day 4: Fooocus 軟體全攻略</h1>
+                    <div class="highlight-box">
+                        <p><strong>今日目標：</strong> 熟悉考試軟體 Fooocus 的操作邏輯，這是術科得分的核心。</p>
+                        <p><strong>軟體特性：</strong> SDXL 核心、極簡介面、內建大量優化。</p>
+                    </div>
+                `
+            },
+            {
+                title: "Day 4-2: 基礎設定 (Setting)",
+                content: `
+                    <h2>Setting 分頁重點</h2>
+                    <p>記得勾選 <strong>Advanced</strong> 才能看到完整功能。</p>
+
+                    <ul>
+                        <li><strong>Performance (效能)：</strong> 
+                            <ul><li>Speed (快、品質普)</li>
+                            <li>Quality (慢、品質好 - 考試建議用這個)</li></ul>
+                        </li>
+                        <li><strong>Aspect Ratios (長寬比)：</strong> 
+                            <ul><li>1152×896 (預設)</li>
+                            <li>896×1152 (直式)</li>
+                            <li>16:9 (電影感) - 考試看清楚題目要求。</li></ul>
+                        </li>
+                        <li><strong>Image Number：</strong> 一次生幾張。建議設 2 張，增加挑選空間。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 4-3: 風格選擇 (Style)",
+                content: `
+                    <h2>Style 分頁 - 考試神隊友</h2>
+                    <div class="lee-note">
+                        <p>Fooocus 的強項在於它幫你寫好了幾百種風格的 Prompt。你不用打 "Cyberpunk style"，只要勾選就好。</p>
+                    </div>
+
+                    <h3>常用必記風格：</h3>
+                    <ul>
+                        <li><strong>Fooocus V2 / Enhance：</strong> 預設增強，讓畫面更細緻。</li>
+                        <li><strong>SAI-3D-model：</strong> 3D 卡通風 (Pixar/Disney 感覺)。</li>
+                        <li><strong>Cinematic-default：</strong> 電影寫實風。</li>
+                        <li><strong>MRE-Anime：</strong> 日系動漫風。</li>
+                        <li><strong>Artstyle-Watercolor：</strong> 水彩風。</li>
+                    </ul>
+                    <p><em>注意：可以複選！例如同時勾選 Cinematic + Cyberpunk。</em></p>
+                `
+            },
+            {
+                title: "Day 4-4: 模型選擇 (Model)",
+                content: `
+                    <h2>Model 分頁 - 底模與 LoRA</h2>
+
+                    <h3>Base Model (底模)</h3>
+                    <ul>
+                        <li>通常使用 <strong>Juggernaut XL</strong> (寫實全能) 或 <strong>BluePencil XL</strong> (動漫)。</li>
+                        <li>Refiner (細化模型)：通常設為 None 即可，除非追求極致細節。</li>
+                    </ul>
+
+                    <h3>LoRA (外掛)</h3>
+                    <ul>
+                        <li>考試若提供 LoRA 檔案，請在此處掛載。</li>
+                        <li><strong>Weight (權重)：</strong> 預設 1.0 有時太強會破圖，建議 <strong>0.5 ~ 0.8</strong>。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 4-5: Advanced - Upscale",
+                content: `
+                    <h2>放大與修復 (Upscale & Variation)</h2>
+                    <p>當你生成了一張滿意的圖，但解析度不夠，或想微調。</p>
+
+                    <ul>
+                        <li><strong>Upscale (1.5x / 2x)：</strong> 單純放大圖片，增加細節。</li>
+                        <li><strong>Vary (Subtle)：</strong> 微調。構圖不變，細節微變 (適合想換個表情但不想換姿勢)。</li>
+                        <li><strong>Vary (Strong)：</strong> 大改。構圖類似，但內容大變。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 4-6: Image Prompt (1) - 概念",
+                content: `
+                    <h2>Image Prompt (墊圖) - 術科核心</h2>
+                    <p>位於介面下方的 Input Image 區域。</p>
+
+                    <h3>功能：</h3>
+                    <p>讓 AI「參考」你上傳的圖片來畫圖。這是 Stable Diffusion 中 <strong>ControlNet</strong> 與 <strong>IP-Adapter</strong> 的簡易版。</p>
+
+                    <h3>四種模式：</h3>
+                    <ol>
+                        <li><strong>Image Prompt：</strong> 參考風格與內容。</li>
+                        <li><strong>PyraCanny：</strong> 參考線條邊緣 (構圖)。</li>
+                        <li><strong>CPDS：</strong> 參考景深結構。</li>
+                        <li><strong>FaceSwap：</strong> 換臉。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 4-7: Image Prompt (2) - PyraCanny",
+                content: `
+                    <h2>PyraCanny (邊緣檢測)</h2>
+                    <p><strong>考題應用：</strong> 「請將這張素描草圖，變成全彩實景圖。」</p>
+
+                    <h3>操作步驟：</h3>
+                    <ol>
+                        <li>勾選 Input Image -> Image Prompt。</li>
+                        <li>上傳草圖。</li>
+                        <li>點擊 Advanced (下方)。</li>
+                        <li><strong>Stop At：</strong> 設定 AI 參考到什麼時候。</li>
+                        <li><strong>Type：</strong> 選擇 <code>PyraCanny</code>。</li>
+                        <li>輸入 Prompt (描述色彩與材質)。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 4-8: Image Prompt (3) - FaceSwap",
+                content: `
+                    <h2>FaceSwap (換臉)</h2>
+                    <p><strong>考題應用：</strong> 「請讓模特兒換上這張明星的臉。」</p>
+
+                    <h3>操作步驟：</h3>
+                    <ol>
+                        <li>上傳明星照片。</li>
+                        <li>Type 選擇 <code>FaceSwap</code>。</li>
+                        <li>Prompt 描述原本的場景與動作。</li>
+                        <li>生成結果會保持原圖動作，但臉變成明星的。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 4-9: 實戰練習 - 混合墊圖",
+                content: `
+                    <h2>進階技巧：混合多張圖</h2>
+                    <p>Fooocus 允許同時上傳多張參考圖。</p>
+
+                    <h3>例子：</h3>
+                    <ul>
+                        <li>圖片 A (人臉) -> 設定為 FaceSwap。</li>
+                        <li>圖片 B (姿勢) -> 設定為 PyraCanny。</li>
+                        <li><strong>結果：</strong> 產生一張擁有 A 的臉、擺著 B 的姿勢的新圖。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 4-10: Inpaint 介面預習",
+                content: `
+                    <h2>Inpaint (重繪) 介面</h2>
+                    <p>這是 Day 5 的重點，先熟悉位置。</p>
+
+                    <ul>
+                        <li>位於 Input Image -> <strong>Inpaint or Outpaint</strong> 分頁。</li>
+                        <li>核心工具：畫筆 (Brush) 用來塗抹遮罩 (Mask)。</li>
+                        <li>Prompt：在這邊輸入的文字，只會影響「被塗抹」的區域。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 4-11: Day 4 總結",
+                content: `
+                    <h2>Day 4 重點回顧</h2>
+                    <ul>
+                        <li><strong>Style</strong> 是 Fooocus 的靈魂，記得勾選。</li>
+                        <li><strong>Image Prompt</strong> 讓你參考構圖。</li>
+                        <li><strong>PyraCanny</strong> 用於線稿上色。</li>
+                        <li><strong>FaceSwap</strong> 用於換臉。</li>
+                    </ul>
+                    <hr>
+                    <p style="text-align: center; font-size: 1.5rem;">🎉 Day 4 完成！準備進入 Day 5：術科必殺技。</p>
+                `
+            },
+
+            // --- Day 5: 術科必殺技 ---
+            {
+                title: "Day 5-1: 術科必殺技",
+                content: `
+                    <h1>🎨 Day 5: 術科考題必殺技</h1>
+                    <div class="highlight-box">
+                        <p><strong>今日目標：</strong> 針對考試最常出現的「難題」(爛手、去背、擴圖) 進行專項特訓。</p>
+                        <p><strong>口訣：</strong> 先生成、再修復、後合成。</p>
+                    </div>
+                `
+            },
+            {
+                title: "Day 5-2: Inpaint 修復爛手 (1)",
+                content: `
+                    <h2>必殺技一：修手 (Fixing Hands)</h2>
+                    <p>AI 最容易畫壞手，這也是扣分重點。</p>
+
+                    <h3>標準流程：</h3>
+                    <ol>
+                        <li>將壞掉的圖送到 <strong>Inpaint</strong> 分頁。</li>
+                        <li>用畫筆塗抹手部 (範圍要比手稍微大一點點)。</li>
+                        <li><strong>Method：</strong> 選擇 <code>Inpaint or Outpaint (default)</code>。</li>
+                        <li><strong>Prompt：</strong> 輸入 <code>detailed hand, perfect fingers, 5 fingers</code>。</li>
+                        <li>Generate!</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 5-3: Inpaint 換裝/換物 (2)",
+                content: `
+                    <h2>必殺技二：換裝 (Changing Object)</h2>
+                    <p>考題：「請將圖片中的紅襯衫換成藍色西裝。」</p>
+
+                    <h3>操作：</h3>
+                    <ol>
+                        <li>Inpaint 分頁。</li>
+                        <li>塗抹衣服區域。</li>
+                        <li><strong>Prompt：</strong> <code>blue business suit, high quality</code>。</li>
+                        <li>Generate! (AI 會自動融合邊緣光影)。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 5-4: Outpaint 擴充背景",
+                content: `
+                    <h2>必殺技三：擴圖 (Outpainting)</h2>
+                    <p>考題：「這張圖是直的，請把它變成橫的 16:9 海報背景。」</p>
+
+                    <h3>操作：</h3>
+                    <ol>
+                        <li>Input Image -> Inpaint or Outpaint。</li>
+                        <li><strong>Zoom Out (縮小)：</strong> 選擇上下左右要擴充的方向 (如 Left, Right)。</li>
+                        <li>或是直接將畫布設定為目標尺寸，將原圖縮小放置中間，塗抹四周空白處。</li>
+                        <li><strong>Prompt：</strong> 描述背景 (如 <code>beach background, sky</code>) 或留空讓 AI 自動補。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 5-5: Photoshop 生成填色 (1)",
+                content: `
+                    <h2>必殺技四：PS 生成填色 (Generative Fill)</h2>
+                    <p>如果考場有 PS (或 Firefly 網頁版)，這招比 Fooocus 更快。</p>
+
+                    <h3>移除路人：</h3>
+                    <ol>
+                        <li>用套索工具 (Lasso Tool) 圈選路人。</li>
+                        <li>點擊「生成填色」。</li>
+                        <li><strong>不要輸入任何文字</strong> (留空)。</li>
+                        <li>按下生成 -> 路人消失，背景自動補好。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 5-6: Photoshop 生成填色 (2)",
+                content: `
+                    <h2>PS 生成填色：新增物件</h2>
+                    <p>考題：「請在桌上加一杯咖啡。」</p>
+
+                    <h3>操作：</h3>
+                    <ol>
+                        <li>用選取工具在桌上畫一個圈。</li>
+                        <li>點擊「生成填色」。</li>
+                        <li>輸入 <code>a cup of coffee, steam, realistic</code>。</li>
+                        <li>生成 -> 咖啡出現，且帶有正確的陰影。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 5-7: 描述 (Describe/Interrogate)",
+                content: `
+                    <h2>不知道 Prompt 怎麼寫？</h2>
+                    <p>考題：「請重現這張圖的風格。」但你不知道那是甚麼風格。</p>
+
+                    <h3>Fooocus 技巧：</h3>
+                    <ol>
+                        <li>Input Image -> <strong>Describe</strong>。</li>
+                        <li>上傳圖片。</li>
+                        <li>點擊 <strong>Describe this image</strong>。</li>
+                        <li>AI 會吐出它看到的 Prompt (如 <code>oil painting, van gogh style...</code>)。</li>
+                        <li>複製這些 Prompt 去生成。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 5-8: 考試SOP - 拿到題目怎麼辦？",
+                content: `
+                    <h2>術科考試標準作業程序 (SOP)</h2>
+                    
+                    <ol>
+                        <li><strong>讀題：</strong> 確認尺寸 (16:9?)、格式 (PNG?)、必要元素 (貓? 機器人?)。</li>
+                        <li><strong>選風格：</strong> 在 Fooocus 勾選對應 Style。</li>
+                        <li><strong>寫 Prompt：</strong> 主體 + 環境 + 風格。</li>
+                        <li><strong>生成 (首抽)：</strong> 先生 4 張看感覺。</li>
+                        <li><strong>挑選與修復：</strong> 選最好的一張，用 Inpaint 修手指、修瑕疵。</li>
+                        <li><strong>放大：</strong> 使用 Upscale 放大到指定解析度。</li>
+                        <li><strong>存檔：</strong> 依照規定命名 (學號_Q1.png)。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 5-9: 考前最後檢查",
+                content: `
+                    <h2>考前最後檢查清單</h2>
+                    
+                    <ul>
+                        <li><input type="checkbox"> 手指是不是 5 根？(最常被扣分)</li>
+                        <li><input type="checkbox"> 肢體有沒有扭曲？</li>
+                        <li><input type="checkbox"> 題目要求的物件都有出現嗎？</li>
+                        <li><input type="checkbox"> 圖片解析度是否足夠？</li>
+                        <li><input type="checkbox"> 檔案是否可以開啟？</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 5-10: 結語",
+                content: `
+                    <h1>🎓 恭喜完成 5 天衝刺！</h1>
+                    <div class="highlight-box">
+                        <p>你已經掌握了從 AI 原理、法律規避到術科實戰的所有關鍵知識。</p>
+                        <p>請放鬆心情，善用 <strong>Inpaint</strong> 與 <strong>Google 翻譯</strong>，考試一定沒問題！</p>
+                    </div>
+                    <p style="text-align: center; margin-top: 30px;">
+                        <a href="mock_exam.html" target="_blank" style="background: var(--primary); color: white; padding: 15px 30px; text-decoration: none; border-radius: 50px; font-weight: bold;">前往模擬測驗，驗收成果 ➡</a>
+                    </p>
+                `
+            }
         ];
 
         // System Logic
@@ -278,6 +1079,7 @@
         const nextBtn = document.getElementById('nextBtn');
         const chapterBtns = document.querySelectorAll('.chapter-btn');
 
+        // Initialize Slides
         function initSlides() {
             slider.innerHTML = '';
             slidesData.forEach((data, index) => {
@@ -286,8 +1088,8 @@
                 if (index === 0) slideDiv.classList.add('active');
                 
                 slideDiv.innerHTML = `
-                    <div style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 10px;">${data.t}</div>
-                    ${data.c}
+                    <div style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 10px;">${data.title}</div>
+                    ${data.content}
                     <div class="slide-footer">Slide ${index + 1} / ${slidesData.length}</div>
                 `;
                 slider.appendChild(slideDiv);
@@ -295,6 +1097,7 @@
             updateUI();
         }
 
+        // Navigation
         function changeSlide(direction) {
             const nextIndex = currentSlide + direction;
             if (nextIndex >= 0 && nextIndex < slidesData.length) {
@@ -320,29 +1123,36 @@
                     slide.classList.add('prev');
                 }
             });
+            // Scroll to top of new slide
             if(slides[currentSlide]) slides[currentSlide].scrollTop = 0;
         }
 
         function updateUI() {
+            // Update Progress
             progressText.innerText = `${currentSlide + 1} / ${slidesData.length}`;
+            
+            // Update Buttons
             prevBtn.disabled = currentSlide === 0;
             nextBtn.disabled = currentSlide === slidesData.length - 1;
 
+            // Update Nav Bar Active State
             chapterBtns.forEach(btn => btn.classList.remove('active'));
             if(currentSlide < 10) chapterBtns[0].classList.add('active');
             else if(currentSlide < 20) chapterBtns[1].classList.add('active');
             else if(currentSlide < 30) chapterBtns[2].classList.add('active');
             else if(currentSlide < 42) chapterBtns[3].classList.add('active');
-            else if(currentSlide < 50) chapterBtns[4].classList.add('active');
-            else chapterBtns[5].classList.add('active');
+            else chapterBtns[4].classList.add('active');
         }
 
+        // Keyboard & Touch
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
             if (e.key === 'ArrowLeft') changeSlide(-1);
         });
 
+        // Run
         initSlides();
+
     </script>
 </body>
 </html>
