@@ -34,10 +34,10 @@
             border-radius: 16px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
             margin-top: 10px;
-            position: relative;
+            position: relative; /* 為了定位返回按鈕 */
         }
 
-        /* 左上角返回連結 */
+        /* 新增：左上角返回連結樣式 */
         .back-link {
             display: inline-block;
             margin-bottom: 15px;
@@ -73,6 +73,7 @@
             margin-bottom: 2rem;
         }
 
+        /* Question Styles */
         .question-card { animation: fadeIn 0.4s ease; }
         
         .badge {
@@ -84,11 +85,11 @@
             margin-bottom: 15px;
             text-transform: uppercase;
         }
-        .badge.theory { background: #dbeafe; color: #1e40af; }
-        .badge.prompt { background: #fce7f3; color: #9d174d; }
-        .badge.tool { background: #d1fae5; color: #065f46; }
-        .badge.law { background: #ffedd5; color: #9a3412; }
-        .badge.design { background: #f3f4f6; color: #4b5563; }
+        .badge.theory { background: #dbeafe; color: #1e40af; }    /* 原理 */
+        .badge.prompt { background: #fce7f3; color: #9d174d; }    /* 提示詞 */
+        .badge.tool { background: #d1fae5; color: #065f46; }      /* 軟體操作 */
+        .badge.law { background: #ffedd5; color: #9a3412; }       /* 法規 */
+        .badge.design { background: #f3f4f6; color: #4b5563; }    /* 設計 */
 
         .question-text {
             font-size: 1.3rem;
@@ -122,12 +123,21 @@
 
         .option-btn:disabled { cursor: not-allowed; opacity: 0.7; }
 
-        .option-btn.correct { background-color: #dcfce7; border-color: var(--success); color: #14532d; }
+        .option-btn.correct {
+            background-color: #dcfce7;
+            border-color: var(--success);
+            color: #14532d;
+        }
         .option-btn.correct::after { content: '✔ 正解'; position: absolute; right: 20px; font-weight: bold; }
 
-        .option-btn.wrong { background-color: #fee2e2; border-color: var(--error); color: #7f1d1d; }
+        .option-btn.wrong {
+            background-color: #fee2e2;
+            border-color: var(--error);
+            color: #7f1d1d;
+        }
         .option-btn.wrong::after { content: '✖ 錯誤'; position: absolute; right: 20px; font-weight: bold; }
 
+        /* Feedback Area */
         .feedback {
             margin-top: 25px;
             padding: 20px;
@@ -157,6 +167,7 @@
         }
         .next-btn:hover { background-color: #4338ca; transform: translateY(-2px); }
 
+        /* Result Screen */
         .result-screen { text-align: center; display: none; padding: 20px; }
         .score-circle {
             width: 160px; height: 160px;
@@ -186,6 +197,7 @@
 <body>
 
 <div class="container">
+    <!-- 新增：隨時可點擊的返回按鈕 -->
     <a href="index.html" class="back-link">⬅ 回到講義 (index.html)</a>
 
     <header>
@@ -193,13 +205,16 @@
         <div class="subtitle">涵蓋原理、法規、Fooocus 實戰與進階參數 (修正版)</div>
     </header>
 
+    <!-- Quiz Area -->
     <div id="quiz-area">
         <div class="stats-bar">
             <span id="progress">準備開始...</span>
             <span id="score-display">得分: 0</span>
         </div>
 
-        <div id="question-container" class="question-card"></div>
+        <div id="question-container" class="question-card">
+            <!-- Question content injected by JS -->
+        </div>
 
         <div id="feedback" class="feedback">
             <span class="feedback-title">💡 專家解析：</span>
@@ -209,6 +224,7 @@
         <button id="next-btn" class="next-btn" onclick="nextQuestion()">下一題 ⮕</button>
     </div>
 
+    <!-- Result Area -->
     <div id="result-area" class="result-screen">
         <div class="score-circle" id="final-score">0</div>
         <h2 id="result-title"></h2>
@@ -225,109 +241,126 @@
 </div>
 
 <script>
+    // ---------------------------------------------------------
+    // 100 題完整題庫 (已修正答案錯位問題)
+    // ---------------------------------------------------------
     const fullQuestionBank = [
-        // 確保選項 0 是正確答案的題目，其 a (answer index) 設定為 0
-        { c: "theory", q: "LLM (大型語言模型) 的核心運作機制是？", o: ["文字接龍 (預測下一個 Token)", "理解情感", "資料庫檢索", "邏輯推理"], a: 0, n: "LLM 本質是機率模型，預測下一個出現機率最高的 Token。" },
-        { c: "theory", q: "1 個 Token 等於 1 個單字嗎？", o: ["否，1 個單字可能由多個 Token 組成", "是", "Token 是標點", "Token 是像素"], a: 0, n: "Token 是向量化單位，不一定等於單字。" },
-        { c: "theory", q: "生成式 AI 產生「幻覺」的原因？", o: ["機率模型依機率強行生成", "說謊", "網路斷線", "資料庫壞了"], a: 0, n: "AI 不是查證，是依機率生成，所以會一本正經胡說八道。" },
-        { c: "theory", q: "RLHF 是什麼？", o: ["人類回饋強化學習", "檔案格式", "隨機學習", "讀取硬碟"], a: 0, n: "RLHF 讓 AI 對齊人類價值觀 (禮貌、安全)。" },
-        { c: "theory", q: "擴散模型 (Diffusion) 的原理？", o: ["去噪 (Denoising)", "拼貼", "壓縮", "濾鏡"], a: 0, n: "從雜訊中逐步移除噪聲還原影像。" },
-        { c: "theory", q: "CLIP 模型的作用？", o: ["將文字轉為圖像能理解的向量", "畫圖", "放大", "產生雜訊"], a: 0, n: "CLIP 是連接文字與圖像的橋樑。" },
-        { c: "theory", q: "Transformer 的核心機制？", o: ["注意力機制 (Self-Attention)", "卷積", "池化", "遞歸"], a: 0, n: "Attention 讓模型關注上下文關聯。" },
-        { c: "theory", q: "下列何者是生成式 AI？", o: ["Stable Diffusion", "垃圾郵件過濾", "門禁系統", "股市預測"], a: 0, n: "創造新資料的是生成式。" },
-        { c: "theory", q: "VAE 的作用？", o: ["將 Latent 解碼回像素圖片", "理解文字", "去噪", "亂數"], a: 0, n: "VAE 負責最後將數學特徵轉回圖片。" },
-        { c: "theory", q: "預訓練後的模型稱為？", o: ["Base Model", "ChatBot", "Plugin", "LoRA"], a: 0, n: "懂知識但不懂指令的模型。" },
-        { c: "theory", q: "Temperature 控制什麼？", o: ["隨機性與創造力", "風扇", "色溫", "解析度"], a: 0, n: "溫度越高，隨機性(創意)越高。" },
-        { c: "theory", q: "CoT (思維鏈) 是？", o: ["請 AI 一步步思考", "畫鎖鏈", "加密", "加速"], a: 0, n: "引導 AI 展示推理步驟。" },
-        { c: "theory", q: "Zero-shot 是？", o: ["不給範例直接問", "訓練失敗", "耗電零", "畫0張"], a: 0, n: "無範例提示。" },
-        { c: "theory", q: "In-context Learning 是？", o: ["在 Prompt 給範例模仿", "上學", "聯網", "讀檔"], a: 0, n: "Few-shot learning。" },
-        { c: "theory", q: "Overfitting (過擬合) 後果？", o: ["死背資料無法泛化", "變聰明", "變快", "幻覺"], a: 0, n: "缺乏應變能力。" },
-        { c: "theory", q: "Fine-tuning 目的？", o: ["調整參數適應特定任務", "重練", "修顯卡", "增加體積"], a: 0, n: "微調以專精特定領域。" },
-        { c: "prompt", q: "Prompt 中增強權重最強的寫法？", o: ["(cat:1.5)", "(cat)", "((cat))", "[cat]"], a: 0, n: "直接指定數值最強。" },
-        { c: "prompt", q: "`[keyword]` 代表？", o: ["減弱 (De-emphasis)", "增強", "隨機", "註解"], a: 0, n: "方括號是減弱。" },
-        { c: "prompt", q: "不想看到手指壞掉，應加在哪？", o: ["Negative Prompt", "Positive", "Style", "Model"], a: 0, n: "負面提示詞。" },
-        { c: "prompt", q: "`break` 的功能？", o: ["中斷語意關聯", "休息", "刪除", "停止"], a: 0, n: "防止前後文顏色混染。" },
-        { c: "prompt", q: "乾淨背景的 Prompt？", o: ["clean background, negative space", "detailed", "scenery", "crowded"], a: 0, n: "留白專用詞。" },
-        { c: "prompt", q: "80 年代風格？", o: ["vaporwave, retro", "cyberpunk", "futuristic", "medieval"], a: 0, n: "復古風格。" },
-        { c: "prompt", q: "`masterpiece` 是什麼詞？", o: ["品質詞", "風格", "內容", "負面"], a: 0, n: "起手式必備。" },
-        { c: "prompt", q: "`(white background:1.3)` 意思？", o: ["權重提升 30%", "1.3個", "寬度1.3", "透明"], a: 0, n: "加強權重。" },
-        { c: "prompt", q: "固定長相最好的方法？", o: ["FaceSwap 或 LoRA", "Prompt", "CFG", "Negative"], a: 0, n: "Prompt 很難固定長相。" },
-        { c: "prompt", q: "Prompt 順序重要嗎？", o: ["重要，越前面權重越高", "不重要", "中間重要", "後面重要"], a: 0, n: "越前面越重要。" },
-        { c: "prompt", q: "角色設定圖 Prompt？", o: ["character sheet, multiple views", "selfie", "landscape", "macro"], a: 0, n: "三視圖專用。" },
-        { c: "prompt", q: "避免文字出現？", o: ["text, watermark", "no text", "font", "book"], a: 0, n: "負面提示詞。" },
-        { c: "prompt", q: "`solo` 意思？", o: ["單人", "唱歌", "很多", "背景"], a: 0, n: "只有一個主體。" },
-        { c: "tool", q: "Fooocus Style 功能？", o: ["自動注入風格 Prompt", "切換面板", "調整尺寸", "上傳"], a: 0, n: "懶人風格包。" },
-        { c: "tool", q: "CFG 太高會？", o: ["過曝、線條崩壞", "黑白", "模糊", "變快"], a: 0, n: "過度引導。" },
-        { c: "tool", q: "Steps 建議值？", o: ["20-40", "1-5", "100+", "1000"], a: 0, n: "CP值最高。" },
-        { c: "tool", q: "Seed 作用？", o: ["控制初始雜訊，固定可重現", "種植物", "解析度", "權重"], a: 0, n: "重現圖片的鑰匙。" },
-        { c: "tool", q: "Inpaint 用途？", o: ["修復瑕疵", "刪圖", "放大", "訓練"], a: 0, n: "局部重繪。" },
-        { c: "tool", q: "Outpaint 用途？", o: ["擴充畫布", "縮小", "塗黑", "對比"], a: 0, n: "補完畫面。" },
-        { c: "tool", q: "LoRA 建議權重？", o: ["0.6 ~ 0.8", "0.1", "1.5", "2.0"], a: 0, n: "避免過擬合。" },
-        { c: "tool", q: "PyraCanny 作用？", o: ["抓邊緣構圖", "換臉", "抓顏色", "抓景深"], a: 0, n: "線稿上色用。" },
-        { c: "tool", q: "CPDS 作用？", o: ["景深結構", "顏色", "人臉", "風格"], a: 0, n: "抓空間結構。" },
-        { c: "tool", q: "FaceSwap 作用？", o: ["換臉", "模糊", "測年齡", "化妝"], a: 0, n: "換臉。" },
-        { c: "tool", q: "放大圖片用？", o: ["Upscale", "Crop", "Rotate", "Filter"], a: 0, n: "增加細節放大。" },
-        { c: "tool", q: "Refiner 用途？", o: ["最後修飾細化", "降畫質", "刪除", "格式化"], a: 0, n: "優化紋理。" },
-        { c: "tool", q: "Euler a 特性？", o: ["不確定性高 (Ancestral)", "最寫實", "最慢", "不支援"], a: 0, n: "畫面會一直變。" },
-        { c: "tool", q: "DPM++ 2M Karras 特性？", o: ["速度快品質好", "最古老", "馬賽克", "只能動漫"], a: 0, n: "Fooocus 預設。" },
-        { c: "tool", q: "Clip Skip 2 用於？", o: ["二次元動漫", "寫實", "黑白", "風景"], a: 0, n: "動漫模型常用。" },
-        { c: "tool", q: "PS 移除路人 Prompt？", o: ["留空", "remove", "clean", "transparent"], a: 0, n: "留空自動補。" },
-        { c: "tool", q: "Stop At 0.5 意思？", o: ["參考影響力只到 50%", "當機", "透明度", "成功率"], a: 0, n: "後半段自由發揮。" },
-        { c: "tool", q: "Upscale 2x 意思？", o: ["邊長放大2倍", "時間2倍", "檔案2倍", "美觀2倍"], a: 0, n: "解析度變大。" },
-        { c: "tool", q: "Vary (Strong) 差別？", o: ["大改構圖", "微調", "沒差", "變快"], a: 0, n: "重繪幅度大。" },
-        { c: "tool", q: "圖片灰灰的原因？", o: ["缺 VAE", "Prompt 長", "Step 多", "Seed 錯"], a: 0, n: "VAE 解碼顏色。" },
-        { c: "law", q: "純 AI 圖著作權？", o: ["無著作權", "使用者", "AI 公司", "硬體商"], a: 0, n: "非人類創作。" },
-        { c: "law", q: "大幅精修後？", o: ["人為部分受保護", "全有", "全無", "公司有"], a: 0, n: "保護人類創作部分。" },
-        { c: "law", q: "Deepfake 色情片？", o: ["加重誹謗、刑責", "賠錢", "無罪", "倫理"], a: 0, n: "台灣已修法。" },
-        { c: "law", q: "訓練資料版權？", o: ["合理使用爭議中", "合法", "非法", "付費"], a: 0, n: "灰色地帶。" },
-        { c: "law", q: "生成米老鼠商用？", o: ["侵權", "沒事", "老了", "自由"], a: 0, n: "實質相似即侵權。" },
-        { c: "law", q: "Bias 意思？", o: ["刻板印象", "吃辣", "過熱", "拒絕"], a: 0, n: "資料不平衡。" },
-        { c: "law", q: "機密資料輸入 AI？", o: ["外洩風險", "沒事", "變聰明", "變快"], a: 0, n: "會被用於訓練。" },
-        { c: "law", q: "人機協作登記？", o: ["排除 AI 部分", "全過", "不接受", "付錢"], a: 0, n: "美版權局規定。" },
-        { c: "law", q: "指名風格侵權？", o: ["不侵權 (風格無版權)", "侵權", "人格權", "違法"], a: 0, n: "風格不受保護。" },
-        { c: "law", q: "AI 詐欺？", o: ["詐欺罪", "著作權", "專利", "商標"], a: 0, n: "本質是詐欺。" },
-        { c: "design", q: "C.R.A.P.？", o: ["Contrast, Repetition, Alignment, Proximity", "Create", "Color", "Cut"], a: 0, n: "排版四原則。" },
-        { c: "design", q: "背景太花違反？", o: ["對比", "重複", "對齊", "親密"], a: 0, n: "看不到字。" },
-        { c: "design", q: "去背格式？", o: ["PNG", "JPG", "BMP", "TXT"], a: 0, n: "PNG 支援透明。" },
-        { c: "design", q: "三分法？", o: ["九宮格交叉點", "切三塊", "畫三分之一", "三色"], a: 0, n: "構圖法。" },
-        { c: "design", q: "CMYK 用於？", o: ["印刷", "沒差", "螢幕", "貴"], a: 0, n: "印刷色。" },
-        { c: "design", q: "印刷解析度？", o: ["300", "72", "一樣", "小"], a: 0, n: "300 dpi。" },
-        { c: "design", q: "互補色？", o: ["相對 (180度)", "相鄰", "90度", "同一"], a: 0, n: "對比強。" },
-        { c: "design", q: "暖色感覺？", o: ["熱情", "冷靜", "悲傷", "神秘"], a: 0, n: "紅黃橘。" },
-        { c: "design", q: "留白？", o: ["呼吸感", "沒塗滿", "偷懶", "省墨"], a: 0, n: "設計元素。" },
-        { c: "design", q: "低解析印刷？", o: ["AI Upscale", "拉大", "小畫家", "放棄"], a: 0, n: "需補點放大。" },
-        { c: "prompt", q: "`isometric` 用於？", o: ["等角視圖 (2.5D)", "自拍", "全景", "特寫"], a: 0, n: "遊戲/建築視角。" },
-        { c: "prompt", q: "`bokeh` 意思？", o: ["散景 (模糊)", "波浪", "書", "黑"], a: 0, n: "攝影術語。" },
-        { c: "prompt", q: "`impasto` 意思？", o: ["厚塗法", "線稿", "素描", "向量"], a: 0, n: "油畫技法。" },
-        { c: "prompt", q: "`cyberpunk` 元素？", o: ["霓虹燈", "森林", "鄉村", "復古"], a: 0, n: "高科技低生活。" },
-        { c: "tool", q: "LoRA 全名？", o: ["Low-Rank Adaptation", "Long Range", "Local", "Load"], a: 0, n: "低秩適應。" },
-        { c: "prompt", q: "`chibi` 意思？", o: ["Q版", "赤壁", "翅膀", "吃"], a: 0, n: "二頭身。" },
-        { c: "tool", q: "Highres Fix 用途？", o: ["先畫小再放大重繪", "修復破圖", "修色", "縮小"], a: 0, n: "避免構圖崩壞。" },
-        { c: "tool", q: "Fooocus 解析度？", o: ["1152x896", "512", "1920", "4K"], a: 0, n: "SDXL 最佳解析度。" },
-        { c: "law", q: "AI 翻唱？", o: ["侵犯錄音/公開傳輸權", "專利", "商標", "秘密"], a: 0, n: "聲音無權但錄音有。" },
-        { c: "tool", q: "OpenPose 用於？", o: ["骨架姿勢", "邊緣", "深度", "法線"], a: 0, n: "抓動作。" },
-        { c: "prompt", q: "電影光？", o: ["cinematic lighting", "flat", "sketch", "2d"], a: 0, n: "氛圍感。" },
-        { c: "law", q: "轉繪真人照？", o: ["需授權", "不用", "心情", "不商用"], a: 0, n: "重製改作。" },
-        { c: "theory", q: "SFT 是？", o: ["二階", "一階", "三階", "四階"], a: 0, n: "指令微調。" },
-        { c: "tool", q: "破圖原因？", o: ["CFG 太高", "Prompt 短", "Step 多", "解析度"], a: 0, n: "參數錯誤。" },
-        { c: "design", q: "JPG 缺點？", o: ["破壞壓縮無透明", "大", "色少", "無法顯"], a: 0, n: "畫質損耗。" },
-        { c: "tool", q: "Image Number 4？", o: ["一次4張", "畫質4", "4分", "4卡"], a: 0, n: "批次生成。" },
-        { c: "prompt", q: "`(red:0.5)`？", o: ["減弱", "很紅", "50個", "一半"], a: 0, n: "小於1減弱。" },
-        { c: "theory", q: "Transformer 誰提的？", o: ["Google", "OpenAI", "Meta", "MS"], a: 0, n: "2017 Google。" },
-        { c: "tool", q: "模型副檔名？", o: ["safetensors", "exe", "jpg", "txt"], a: 0, n: "安全格式。" },
-        { c: "law", q: "合理使用？", o: ["性別", "目的", "性質", "比例"], a: 0, n: "性別無關 (反向題)。" },
-        { c: "tool", q: "修臉用？", o: ["Restore Faces", "Highres", "Tiling", "Upscale"], a: 0, n: "專門修臉。" },
-        { c: "theory", q: "Latent Space？", o: ["數學特徵空間", "太空", "硬碟", "雲端"], a: 0, n: "去噪運算處。" },
-        { c: "tool", q: "Fooocus 核心？", o: ["SDXL", "1.5", "DALL-E", "MJ"], a: 0, n: "專為 XL 優化。" },
-        { c: "theory", q: "GPT 全名？", o: ["Generative Pre-trained Transformer", "Google", "General", "Great"], a: 0, n: "生成預訓練。" },
-        { c: "law", q: "台灣著作權？", o: ["創作即享有", "登記", "發表", "付費"], a: 0, n: "創作保護主義。" },
-        { c: "tool", q: "鎖定構圖換角色？", o: ["Canny/OpenPose", "Color", "Shuffle", "Inpaint"], a: 0, n: "ControlNet 應用。" },
-        { c: "design", q: "向量圖？", o: ["放大不失真", "失真", "沒差", "大"], a: 0, n: "數學公式。" },
-        { c: "prompt", q: "`macro`？", o: ["微距", "宏觀", "黑白", "長焦"], a: 0, n: "攝影術語。" },
-        { c: "theory", q: "Loss Function？", o: ["衡量差距", "迷路", "刪除", "亂數"], a: 0, n: "訓練指標。" },
-        { c: "tool", q: "Vary Strong 像？", o: ["High Denoising", "Low", "Inpaint", "Upscale"], a: 0, n: "重繪幅度大。" },
-        { c: "prompt", q: "扁平化？", o: ["flat design", "photo", "3d", "oil"], a: 0, n: "設計風格。" },
-        { c: "law", q: "騙說是手繪？", o: ["詐欺", "沒事", "自由", "著作權"], a: 0, n: "誠信問題。" }
+        // --- 1. AI 理論與原理 (Theory) - 李宏毅教授觀點 ---
+        { c: "theory", q: "LLM (大型語言模型) 的核心運作機制，最準確的描述是？", o: ["文字接龍 (預測下一個 Token)", "理解人類情感", "資料庫關鍵字檢索", "邏輯推理運算"], a: 0, n: "LLM 本質是機率模型，根據上文預測下一個出現機率最高的 Token。" },
+        { c: "theory", q: "在 AI 模型中，Token 與單字 (Word) 的關係為何？", o: ["Token 是 AI 處理的最小單位，一個單字可能由多個 Token 組成", "1 Token = 1 單字", "Token 專指標點符號", "Token 是圖片的像素點"], a: 0, n: "Token 是向量化的單位。常見字可能是 1 Token，但罕見字或中文常被拆解為多個 Token。" },
+        { c: "theory", q: "為什麼生成式 AI 會產生「幻覺 (Hallucination)」？", o: ["因為它是機率模型，遇到未知領域會依機率強行生成", "因為它在說謊", "因為網路斷線", "因為資料庫毀損"], a: 0, n: "幻覺源於 AI 的生成本質，它不是在「查證」，而是在「生成」最順暢的語句，即便內容是虛構的。" },
+        { c: "theory", q: "訓練 AI 的三階段中，RLHF 代表什麼？", o: ["Reinforcement Learning from Human Feedback", "Real Long Human File", "Random Learning High Frequency", "Read Learn Hear Feel"], a: 0, n: "RLHF (人類回饋強化學習) 是讓 AI 對齊人類價值觀（如禮貌、安全）的關鍵階段。" },
+        { c: "theory", q: "擴散模型 (Diffusion Model) 的圖像生成過程是？", o: ["從雜訊 (Noise) 中逐步去噪 (Denoising) 還原出影像", "拼貼素材", "壓縮圖片", "濾鏡疊加"], a: 0, n: "擴散模型透過逆向擴散過程，從雜訊中逐步移除噪聲，還原出清晰影像。" },
+        { c: "theory", q: "Stable Diffusion 中的 CLIP 模型主要負責什麼？", o: ["將文字轉為圖像能理解的向量 (Text Encoder)", "畫圖", "放大圖片", "產生雜訊"], a: 0, n: "CLIP 是連接文字與圖像的橋樑，讓 AI 聽得懂 Prompt。" },
+        { c: "theory", q: "Transformer 架構最核心的機制是？", o: ["注意力機制 (Self-Attention)", "卷積 (Convolution)", "池化 (Pooling)", "遞歸 (Recurrence)"], a: 0, n: "Attention 機制讓模型能關注輸入序列中不同位置的關聯性，是現代 AI 的基石。" },
+        { c: "theory", q: "下列何者屬於「生成式 AI」而非「判別式 AI」？", o: ["Midjourney", "垃圾郵件過濾器", "人臉辨識門禁", "股市漲跌預測"], a: 0, n: "生成式 AI 創造新資料；判別式 AI 進行分類或預測數值。" },
+        { c: "theory", q: "VAE (Variational Autoencoder) 在 Stable Diffusion 中的作用是？", o: ["將潛在空間 (Latent) 的數據解碼回像素圖片", "理解文字", "計算去噪", "產生亂數種子"], a: 0, n: "VAE 負責最後一步：把 AI 算好的數學特徵圖 (Latent) 翻譯成人類看得到的彩色圖片 (Pixel)。" },
+        { c: "theory", q: "預訓練 (Pre-training) 階段產出的模型通常被稱為什麼？", o: ["Base Model (基底模型)", "ChatBot", "Plugin", "LoRA"], a: 0, n: "預訓練後的模型懂很多知識但不懂指令，稱為 Base Model。" },
+        { c: "theory", q: "Temperature (溫度) 參數在 AI 生成中通常控制什麼？", o: ["生成的隨機性與創造力", "電腦風扇轉速", "圖片的色溫", "生成的解析度"], a: 0, n: "溫度越高，機率分佈越平坦，AI 越敢選冷門的字/圖，創意(隨機性)越高。" },
+        { c: "theory", q: "Chain of Thought (CoT) 提示法的主要目的是？", o: ["引導 AI 展示推理步驟以提升邏輯準確度", "讓 AI 畫出鎖鏈", "加密對話", "縮短回應時間"], a: 0, n: "CoT (思維鏈) 透過要求 AI「一步步思考」，能顯著提升數學或邏輯題的表現。" },
+        { c: "theory", q: "什麼是 Zero-shot Learning？", o: ["AI 完全沒看過範例直接完成任務", "AI 訓練失敗", "AI 耗電量為零", "AI 只能生成 0 張圖"], a: 0, n: "Zero-shot 指不給任何範例 (Example)，直接下指令讓 AI 完成任務。" },
+        { c: "theory", q: "In-context Learning (上下文學習) 通常是指？", o: ["在 Prompt 中提供幾個範例讓 AI 模仿 (Few-shot)", "AI 去上學", "AI 聯網搜尋", "AI 讀取硬碟檔案"], a: 0, n: "在對話中給予範例讓 AI 現場學習規律，稱為 In-context Learning。" },
+        { c: "theory", q: "模型發生 Overfitting (過擬合) 會導致什麼結果？", o: ["死背訓練資料，無法處理新問題", "變得更聰明", "運算速度變快", "產生幻覺"], a: 0, n: "過擬合就像學生死背考古題，題目稍微改一點就不會寫了，缺乏泛化能力。" },
+        { c: "theory", q: "Fine-tuning (微調) 的主要目的是？", o: ["調整模型參數以適應特定領域任務", "從頭訓練一個大模型", "修理壞掉的顯示卡", "增加模型體積"], a: 0, n: "微調是在已有的預訓練模型基礎上，用特定資料讓它專精於某個領域 (如 LoRA)。" },
+        
+        // --- 2. 提示詞工程 (Prompt Engineering) ---
+        { c: "prompt", q: "在 Prompt 中，若要「大幅增強」某個詞的權重，下列寫法最強烈的是？", o: ["(cat:1.5)", "(cat)", "((cat))", "[cat]"], a: 0, n: "(cat:1.5) 直接指定 1.5 倍權重；((cat)) 約為 1.21 倍。" },
+        { c: "prompt", q: "符號 `[keyword]` 在 Stable Diffusion 提示詞中通常代表？", o: ["降低權重 (De-emphasis)", "增強權重", "隨機選取", "註解"], a: 0, n: "方括號 [] 代表減少該詞對畫面的影響力。" },
+        { c: "prompt", q: "若生成的圖片一直出現多餘的手指，應在 Negative Prompt 加入？", o: ["extra fingers, bad hands", "beautiful hands", "5 fingers", "hand focus"], a: 0, n: "負面提示詞應填入「你不想要看到的東西」。" },
+        { c: "prompt", q: "提示詞 `break` 關鍵字的主要功能是？", o: ["中斷當前 Prompt 的語意關聯，防止顏色混染", "讓 AI 休息", "刪除圖片", "停止生成"], a: 0, n: "BREAK 可以切斷前後文的關聯，例如 `blue hat BREAK red shoes` 可以避免畫出藍色的鞋子。" },
+        { c: "prompt", q: "下列哪個 Prompt 最能生成「乾淨的背景」？", o: ["clean background, negative space, minimalist", "detailed background", "scenery", "crowded"], a: 0, n: "Negative space (留白) 與 minimalist (極簡) 是設計海報背景常用的詞。" },
+        { c: "prompt", q: "若希望生成 80 年代的風格，可以使用哪個關鍵字？", o: ["vaporwave, 80s style, retro", "cyberpunk", "futuristic", "medieval"], a: 0, n: "Vaporwave (蒸氣波) 與 Retro (復古) 是常見的 80 年代風格詞。" },
+        { c: "prompt", q: "提示詞中的 `masterpiece, best quality` 通常被稱為？", o: ["品質詞 (Quality Tags)", "風格詞", "內容詞", "負面詞"], a: 0, n: "這類詞彙用來引導模型生成高畫質的細節，幾乎是起手式必備。" },
+        { c: "prompt", q: "Prompt `(white background:1.3)` 的意思是？", o: ["將白色背景的權重提升 30%", "背景有 1.3 個白色物體", "背景寬度 1.3 倍", "背景透明度 1.3"], a: 0, n: ":1.3 代表權重變為原本的 1.3 倍，即加強 30%。" },
+        { c: "prompt", q: "若要固定生成的人臉長相，最有效的方法不是 Prompt，而是？", o: ["使用 FaceSwap (換臉) 或訓練 LoRA", "寫很長的描述", "加強 CFG", "使用 Negative Prompt"], a: 0, n: "Prompt 很難完美固定長相，使用墊圖 (FaceSwap) 或專屬 LoRA 才是正解。" },
+        { c: "prompt", q: "提示詞順序重要嗎？", o: ["重要，越前面的詞權重通常越高", "不重要，AI 隨機讀取", "重要，中間的詞最重要", "只有最後一個詞重要"], a: 0, n: "Stable Diffusion 的機制通常對越靠前的 Token 給予越高的關注度。" },
+        { c: "prompt", q: "想要生成「三視圖」或「角色設定圖」，該用什麼關鍵字？", o: ["character sheet, multiple views", "selfie", "landscape", "macro shot"], a: 0, n: "Character sheet (角色表) 是生成多角度設定圖的標準用語。" },
+        { c: "prompt", q: "若要避免生成文字或簽名，Negative Prompt 應加入？", o: ["text, signature, watermark", "no text", "font", "book"], a: 0, n: "直接列出 text, watermark, signature 是最有效的做法。" },
+        { c: "prompt", q: "Prompt 中的 `solo` 意思是？", o: ["單人 (只有一個主體)", "唱歌", "很多", "背景"], a: 0, n: "Solo 標籤用來確保畫面只有一個人物，避免出現多餘的路人。" },
+        
+        // --- 3. 軟體操作與參數 (Fooocus/SD) (Tool) ---
+        { c: "tool", q: "在 Fooocus 中，Style 選項 (如 SAI-3D) 的功能是？", o: ["自動幫你加入一大串風格相關的 Prompt", "切換軟體面板", "調整圖片尺寸", "上傳圖片"], a: 0, n: "Style 是 Fooocus 的懶人包，勾選後會自動幫你加上一長串風格描述詞。" },
+        { c: "tool", q: "CFG Scale (Guidance Scale) 設得太高 (例如 20) 會發生什麼事？", o: ["AI 嚴格遵循指令，但畫面可能過曝、線條僵硬", "圖片變黑白", "圖片變得很模糊", "生成速度變快"], a: 0, n: "CFG 太高會導致「過度引導」，使畫面色彩飽和度爆炸或線條崩壞。" },
+        { c: "tool", q: "Sampling Steps (步數) 通常建議設定在多少 CP 值最高？", o: ["20-40", "1-5", "100-150", "1000+"], a: 0, n: "大部分 Sampler 在 20-30 步就已經收斂，再高邊際效益遞減且浪費時間。" },
+        { c: "tool", q: "Seed (種子碼) 的作用是？", o: ["控制初始雜訊的亂數排列，固定 Seed 可重現圖片", "種植植物", "控制圖片解析度", "控制 LoRA 權重"], a: 0, n: "Seed 是重現圖片的鑰匙。相同參數 + 相同 Seed = 相同圖片。" },
+        { c: "tool", q: "Inpaint (局部重繪) 的主要用途是？", o: ["修復畫面瑕疵 (如爛手) 或更換特定物件", "把整張圖刪掉", "放大圖片", "訓練模型"], a: 0, n: "Inpaint 讓你塗抹遮罩 (Mask)，只重新生成該區域。" },
+        { c: "tool", q: "Outpaint (擴充繪製) 的功能是？", o: ["延伸畫布邊界，補完原本不存在的畫面", "把圖片縮小", "塗黑背景", "增加對比度"], a: 0, n: "Outpaint 用於將直圖變橫圖，或補足被切掉的頭腳。" },
+        { c: "tool", q: "LoRA 權重建議設定在多少較安全？", o: ["0.6 ~ 0.8", "0.1", "1.5", "2.0"], a: 0, n: "LoRA 設為 1.0 有時會過擬合，0.6-0.8 通常能保留風格又不會破壞構圖。" },
+        { c: "tool", q: "Fooocus 的 Image Prompt 中，`PyraCanny` 模式的作用是？", o: ["提取線條邊緣 (Edge) 以參考構圖", "換臉", "提取顏色", "提取景深"], a: 0, n: "Canny 是邊緣檢測算法，用於參考線稿或構圖骨架。" },
+        { c: "tool", q: "Fooocus 的 Image Prompt 中，`CPDS` 模式主要參考什麼？", o: ["景深與結構 (Depth/Structure)", "顏色", "人臉特徵", "風格"], a: 0, n: "CPDS 擅長捕捉圖片的空間結構與景深關係。" },
+        { c: "tool", q: "Fooocus 的 Image Prompt 中，`FaceSwap` 的功能是？", o: ["將參考圖的臉移植到生成圖上", "把臉變模糊", "偵測年齡", "化妝"], a: 0, n: "FaceSwap 專門用於換臉，保持原圖動作但換成指定長相。" },
+        { c: "tool", q: "若想放大圖片並增加細節，應使用哪個功能？", o: ["Upscale (放大)", "Crop", "Rotate", "Filter"], a: 0, n: "Upscale 透過 AI 運算在放大過程中填補合理的細節。" },
+        { c: "tool", q: "Model 分頁中的 `Refiner` 用途是？", o: ["在生成最後階段進行修飾與細化", "降低畫質", "刪除模型", "格式化硬碟"], a: 0, n: "Refiner (如 SDXL Refiner) 負責在底圖生成後，再次優化紋理與細節。" },
+        { c: "tool", q: "Sampler `Euler a` 的特性是？", o: ["收斂慢，不確定性高 (Ancestral)，每一步都可能微變", "最寫實", "速度最慢", "不支援 LoRA"], a: 0, n: "Euler a 的 'a' 代表 Ancestral，帶有隨機性，步數增加圖會一直變，不會收斂穩定。" },
+        { c: "tool", q: "Sampler `DPM++ 2M Karras` 的特性是？", o: ["速度快且收斂品質高，Fooocus 預設", "最古老", "畫出來都是馬賽克", "只能畫動漫"], a: 0, n: "這是目前 SDXL 主流推薦的採樣器，速度與品質平衡極佳。" },
+        { c: "tool", q: "Clip Skip 設為 2 通常用於？", o: ["二次元動漫風格 (Nai/Anime)", "寫實攝影", "黑白照片", "風景畫"], a: 0, n: "許多動漫模型 (如 Anything V5) 訓練時設定 Clip Skip 2，使用此設定能還原最佳效果。" },
+        { c: "tool", q: "在 Photoshop Generative Fill 中，若想移除路人，Prompt 應該？", o: ["留空 (不輸入任何字)", "輸入 'remove people'", "輸入 'clean background'", "輸入 'transparent'"], a: 0, n: "Adobe 的生成填色若留空，AI 會自動分析周圍背景進行修補 (移除物件)。" },
+        { c: "tool", q: "Input Image 中的 `Stop At` 參數設為 0.5 代表？", o: ["參考圖的影響力只持續到生成過程的 50%", "生成到一半就當機", "圖片透明度 50%", "成功率 50%"], a: 0, n: "Stop At 控制 ControlNet/Image Prompt介入的時間點。0.5 代表畫到一半就不再干涉，讓 AI 自由發揮後半段。" },
+        { c: "tool", q: "Upscale 通常有 1.5x 和 2x，這倍數是指？", o: ["圖片邊長 (解析度) 的放大倍率", "生成時間倍數", "檔案大小倍數", "美觀度倍數"], a: 0, n: "2x 代表長與寬都變成原本的 2 倍 (總像素變 4 倍)。" },
+        { c: "tool", q: "Vary (Subtle) 與 Vary (Strong) 的差別？", o: ["Subtle 微調細節；Strong 大改構圖", "Subtle 是黑白；Strong 是彩色", "沒有差別", "Strong 比較快"], a: 0, n: "Subtle 適合表情微調；Strong 適合想換個姿勢或視角。" },
+        { c: "tool", q: "若生成出來的圖「灰灰的」不明亮，可能是什麼原因？", o: ["沒有掛載 VAE", "Prompt 寫太長", "Step 太多", "Seed 錯誤"], a: 0, n: "VAE 負責將數值解碼為顏色，若模型未內建且未外掛 VAE，圖片常呈現灰濛濛的狀態。" },
+        
+        // --- 4. 法規與倫理 (Law) ---
+        { c: "law", q: "依據台灣見解，純 AI 生成之圖片著作權歸屬？", o: ["無著作權 (公共領域)", "使用者", "AI 公司", "電腦硬體廠商"], a: 0, n: "必考！非人類精神創作，無著作權。" },
+        { c: "law", q: "若人類對 AI 生成圖進行「大幅度後製精修」，則？", o: ["該「人為創作部分」受著作權保護", "整張圖都有著作權", "還是沒著作權", "只有 AI 公司有權利"], a: 0, n: "人類投入精神創作的部分 (如精修、合成) 受保護，但底圖本身仍無權利。" },
+        { c: "law", q: "使用 Deepfake 製作他人色情影片，在台灣可能觸犯？", o: ["加重誹謗罪、散布猥褻物品罪與特別刑法", "僅民事賠償", "無罪", "違反學術倫理"], a: 0, n: "台灣已修法針對 Deepfake 犯罪加重刑責 (刑法第319條之4等)。" },
+        { c: "law", q: "關於 AI 訓練資料的版權，目前國際趨勢與爭議點是？", o: ["是否屬於「合理使用 (Fair Use)」範疇尚在訴訟中", "完全合法", "完全非法", "只有付費才能訓練"], a: 0, n: "這是一個灰色地帶，目前多數 AI 公司主張合理使用，但創作者團體持反對意見。" },
+        { c: "law", q: "若你使用 AI 生成一張與「米老鼠」一模一樣的圖並商用，是否侵權？", o: ["是，侵害商標權與著作權", "否，因為是 AI 畫的", "否，因為米老鼠很老了", "否，AI 有創作自由"], a: 0, n: "即便工具是 AI，若產出結果與他人受保護作品「實質相似」，使用者仍需負侵權責任。" },
+        { c: "law", q: "Bias (偏見) 在 AI 中通常指？", o: ["模型反映了訓練資料中的刻板印象 (如護士多為女性)", "AI 喜歡吃辣", "AI 電腦過熱", "AI 拒絕工作"], a: 0, n: "偏見源於訓練資料的不平衡，導致生成結果帶有性別、種族等刻板印象。" },
+        { c: "law", q: "將客戶的機密數據 (如程式碼、個資) 輸入到公開的 ChatGPT/Midjourney，會有什麼風險？", o: ["資料可能被用於訓練模型而外洩", "沒風險", "AI 會變聰明", "速度變快"], a: 0, n: "公開版 AI 通常會將輸入資料用於再訓練，機密資料不應上傳。" },
+        { c: "law", q: "關於「人機協作」的著作權登記，美國版權局 (USCO) 的態度是？", o: ["必須詳細揭露並排除 AI 生成部分，只登記人類創作部分", "只要有人類參與就全通過", "完全不接受", "只要付錢就通過"], a: 0, n: "著名的《太空歌劇院》案與《Zarya of the Dawn》案確立了「必須排除 AI 生成部分」的原則。" },
+        { c: "law", q: "若在 Prompt 中指名「風格 (Style)」，例如 `Van Gogh style`，是否侵權？", o: ["不侵權，畫風/風格本身不受著作權保護", "侵犯梵谷的著作權", "侵犯人格權", "違法"], a: 0, n: "著作權法保護「表達」不保護「思想/風格」。模仿梵谷畫風本身不侵權 (且梵谷已過世)。" },
+        { c: "law", q: "Deepfake 用於詐欺 (如假冒親人借錢)，觸犯的是？", o: ["詐欺罪", "著作權法", "專利法", "商標法"], a: 0, n: "利用 AI 技術行騙，本質仍是詐欺。" },
+
+        // --- 5. 設計原理與其他 (Design) ---
+        { c: "design", q: "設計原則中的 C.R.A.P. 代表？", o: ["Contrast, Repetition, Alignment, Proximity", "Create, Read, Apply, Print", "Color, Red, Apple, Pen", "Cut, Run, Add, Paste"], a: 0, n: "對比、重複、對齊、親密性是排版四大原則。" },
+        { c: "design", q: "海報設計中，若背景太花俏導致文字看不清，違反了什麼原則？", o: ["對比 (Contrast)", "重複", "對齊", "親密性"], a: 0, n: "背景與文字對比度不足。" },
+        { c: "design", q: "去背後的圖片，必須儲存為哪種格式才能保留透明背景？", o: ["PNG", "JPG", "BMP", "TXT"], a: 0, n: "JPG 不支援透明通道 (Alpha Channel)，PNG 支援。" },
+        { c: "design", q: "三分法構圖 (Rule of Thirds) 是指？", o: ["將畫面九宮格分割，主體放在交叉點上", "圖片切成三塊", "只畫三分之一", "用三種顏色"], a: 0, n: "經典構圖法，能增加畫面的平衡感與美感。" },
+        { c: "design", q: "RGB 與 CMYK 的差別？", o: ["RGB 用於螢幕顯示，CMYK 用於印刷", "沒差別", "RGB 是印刷，CMYK 是螢幕", "RGB 比較貴"], a: 0, n: "光是三原色 (RGB)，墨水是四色 (CMYK)。做網頁素材用 RGB，做實體海報轉 CMYK。" },
+        { c: "design", q: "解析度 72 dpi 與 300 dpi 的適用場景？", o: ["72 螢幕，300 印刷", "72 印刷，300 螢幕", "都一樣", "數值越小越清楚"], a: 0, n: "螢幕顯示 72 dpi 足夠；印刷品需要 300 dpi 才會清晰。" },
+        { c: "design", q: "互補色 (Complementary Colors) 在色環上的位置是？", o: ["相對 (180度)", "相鄰", "間隔 90 度", "同一點"], a: 0, n: "如紅配綠、藍配橘，對比強烈，適合強調。" },
+        { c: "design", q: "暖色系通常給人什麼感覺？", o: ["熱情、活力、警示", "冷靜、專業", "悲傷", "神秘"], a: 0, n: "紅、黃、橘屬於暖色系。" },
+        { c: "design", q: "什麼是「留白 (White Space)」？", o: ["設計中刻意保留的空白區域，用於引導視線與呼吸感", "畫布沒塗滿", "偷懶", "省墨水"], a: 0, n: "留白是設計的重要元素，不是「空著沒用」。" },
+        { c: "design", q: "若要將低解析度的 AI圖用於海報印刷，第一步應該？", o: ["使用 AI Upscale (放大) 工具提升解析度", "直接拉大", "用小畫家畫", "放棄"], a: 0, n: "直接拉大會模糊 (馬賽克)，需透過 AI 運算補點放大。" },
+
+        // --- 更多變體題目以補足 100 題 ---
+        { c: "theory", q: "下列哪個模型不是擴散模型？", o: ["ChatGPT", "Stable Diffusion", "Midjourney", "DALL-E 3"], a: 0, n: "ChatGPT 是語言模型 (Transformer)，不是擴散模型。" },
+        { c: "tool", q: "Fooocus 預設的解析度是？", o: ["1152x896 (或 1024x1024)", "512x512", "1920x1080", "4096x2160"], a: 0, n: "SDXL 的最佳原生解析度約為 1024x1024 或 1152x896。" },
+        { c: "tool", q: "ControlNet 的 OpenPose 模型主要用於？", o: ["偵測並複製人物骨架姿勢", "偵測邊緣", "偵測深度", "偵測法線"], a: 0, n: "OpenPose 專抓動作骨架 (火柴人)。" },
+        { c: "prompt", q: "想要畫出「電影感」的光影，Prompt 可加？", o: ["cinematic lighting, volumetric lighting", "flat color", "sketch", "2d"], a: 0, n: "Cinematic lighting (電影光) 與 Volumetric lighting (體積光/耶穌光) 是標配。" },
+        { c: "law", q: "將真人照片用 AI 轉繪成動漫風格 (Img2Img)，是否需要原照片授權？", o: ["需要，否則可能侵害重製/改作權", "不需要", "看 AI 心情", "只要不商用就不需要"], a: 0, n: "改作他人著作仍需取得授權。" },
+        { c: "theory", q: "SFT (Supervised Fine-Tuning) 是訓練的第幾階段？", o: ["第二階段", "第一階段 (Pre-train)", "第三階段 (RLHF)", "第四階段"], a: 0, n: "SFT 是讓模型學會「聽指令」的第二階段。" },
+        { c: "tool", q: "若生成圖片出現「破圖」或「噪點過多」，可能是？", o: ["CFG 太高或 VAE 錯誤", "Prompt 太短", "Step 太多", "解析度太高"], a: 0, n: "CFG 過高會讓畫面崩壞；VAE 錯誤會讓顏色異常。" },
+        { c: "design", q: "JPG 格式的主要缺點是？", o: ["破壞性壓縮，會產生噪點且不支援透明", "檔案太大", "顏色太少", "無法在網頁顯示"], a: 0, n: "JPG 為了縮小檔案會丟棄細節 (破壞性壓縮)。" },
+        { c: "tool", q: "Fooocus 的 Advanced 分頁中，`Image Number` 設定為 4 代表？", o: ["一次生成 4 張圖", "畫質變 4 倍", "耗時 4 分鐘", "用 4 張顯示卡"], a: 0, n: "Batch size / Batch count 的概念，一次產出多張供挑選。" },
+        { c: "prompt", q: "Prompt `(red hat:0.5)` 的效果是？", o: ["淡化紅帽子的特徵 (降低權重)", "非常紅的帽子", "50頂帽子", "一半是紅色"], a: 0, n: "權重小於 1 代表減弱。" },
+        { c: "theory", q: "Transformer 架構是由哪間公司提出的？", o: ["Google", "OpenAI", "Meta", "Microsoft"], a: 0, n: "Google 於 2017 年《Attention Is All You Need》論文中提出。" },
+        { c: "tool", q: "Stable Diffusion 的 Checkpoint 模型副檔名通常是？", o: [".safetensors 或 .ckpt", ".exe", ".jpg", ".txt"], a: 0, n: ".safetensors 是目前最安全主流的模型格式。" },
+        { c: "law", q: "「合理使用 (Fair Use)」的判斷標準不包括？", o: ["使用者的性別", "利用之目的與性質", "著作之性質", "利用之質量及其在整個著作所占之比例"], a: 0, n: "著作權法第 65 條有明定合理使用四項基準，性別無關。" },
+        { c: "tool", q: "若要修復臉部崩壞，除了 Inpaint，還可以在生成時勾選？", o: ["Restore Faces (或 CodeFormer/GFPGAN)", "Highres Fix", "Tiling", "Upscale"], a: 0, n: "Restore Faces 是專門修臉的後處理算法。" },
+        { c: "prompt", q: "Prompt `bokeh` 的意思是？", o: ["散景 (背景模糊)", "波浪", "書本", "黑色"], a: 0, n: "攝影術語，指淺景深造成的背景模糊效果。" },
+        { c: "theory", q: "AI 繪圖中的 Latent Space (潛在空間) 是指？", o: ["壓縮後的數學特徵空間，AI 在這裡進行去噪運算", "外太空", "硬碟空間", "雲端空間"], a: 0, n: "為了節省算力，SD 不直接在像素空間運算，而是在壓縮後的 Latent 空間運算。" },
+        { c: "tool", q: "Fooocus 軟體的核心架構基於？", o: ["SDXL", "SD 1.5", "DALL-E", "Midjourney"], a: 0, n: "Fooocus 專為 SDXL 模型優化。" },
+        { c: "prompt", q: "想要畫出「厚塗風格」，可用？", o: ["impasto, oil painting, thick brushstrokes", "lineart", "sketch", "vector"], a: 0, n: "Impasto 是厚塗法。" },
+        { c: "prompt", q: "想要畫出「賽博龐克」風格，可用？", o: ["neon lights, futuristic, high tech, cyberpunk", "nature, forest", "rustic", "vintage"], a: 0, n: "Neon lights (霓虹) 是 Cyberpunk 的標配。" },
+        { c: "tool", q: "Highres. Fix (高解析度修復) 的主要作用？", o: ["在生成過程中進行放大並重繪，避免直接畫大圖產生的多頭/多手問題", "修復破圖", "修復顏色", "縮小圖片"], a: 0, n: "直接畫大圖容易結構崩壞，Highres Fix 是先畫小圖再放大重繪的技術。" },
+        { c: "theory", q: "GPT 的全名是？", o: ["Generative Pre-trained Transformer", "Google Pre-trained Tool", "General Purpose Technology", "Great Powerful Tool"], a: 0, n: "生成式預訓練變換模型。" },
+        { c: "law", q: "在台灣，著作權是「創作完成時」即享有，還是需要「登記」？", o: ["創作完成時即享有 (創作保護主義)", "需登記", "需發表", "需付費"], a: 0, n: "台灣採創作保護主義，不用登記。" },
+        { c: "tool", q: "LoRA 的全名是？", o: ["Low-Rank Adaptation", "Long Range Area", "Local Random Access", "Load Ready Application"], a: 0, n: "低秩適應技術，一種高效微調方法。" },
+        { c: "prompt", q: "Prompt `chibi` 的意思是？", o: ["Q版 / 二頭身角色", "赤壁", "翅膀", "吃比"], a: 0, n: "Chibi 是日文，指 Q 版人物。" },
+        { c: "tool", q: "若要保持畫面的構圖骨架不變 (如姿勢)，但把人換成狗，可用 ControlNet 的？", o: ["Canny 或 OpenPose", "Color", "Shuffle", "Inpaint"], a: 0, n: "Canny (邊緣) 或 OpenPose (骨架) 可以鎖定構圖結構。" },
+        { c: "design", q: "下列哪個顏色組合對比度最低 (易讀性最差)？", o: ["白底黃字", "白底黑字", "藍底白字", "黑底黃字"], a: 0, n: "黃色與白色明度太近，看不清楚。" },
+        { c: "prompt", q: "Prompt `isometric` 通常用於生成？", o: ["等角視圖 (2.5D 遊戲視角)", "自拍", "全景", "特寫"], a: 0, n: "Isometric 是等距視角，常用於建築或遊戲素材。" },
+        { c: "law", q: "利用 AI 模仿某歌手的聲音翻唱歌曲並獲利，可能侵害？", o: ["錄音著作權與公開傳輸權", "專利權", "商標權", "秘密權"], a: 0, n: "雖然聲音本身無著作權，但翻唱涉及原詞曲著作權及錄音相關權利 (若使用原伴奏)。" },
+        { c: "theory", q: "下列何者不是 LLM？", o: ["Stable Diffusion", "GPT-4", "Claude", "Llama"], a: 0, n: "Stable Diffusion 是影像生成模型，其他是語言模型。" },
+        { c: "tool", q: "Fooocus 預設的 Aspect Ratio 1152x896 是幾比幾？", o: ["約 4:3", "約 16:9", "1:1", "9:16"], a: 0, n: "1152/896 = 1.285，接近 4:3 (1.33)。" },
+        { c: "design", q: "向量圖 (Vector) 與點陣圖 (Bitmap) 的差別？", o: ["向量圖放大不失真", "點陣圖放大不失真", "沒差別", "向量圖檔案比較大"], a: 0, n: "AI 生成的是點陣圖；向量圖由數學公式組成，放大不失真。" },
+        { c: "prompt", q: "Prompt `macro photography` 意思是？", o: ["微距攝影 (拍微小細節)", "宏觀攝影", "黑白攝影", "長焦攝影"], a: 0, n: "Macro 是微距。" },
+        { c: "theory", q: "AI 訓練中的「Loss Function (損失函數)」作用是？", o: ["衡量模型預測與真實答案的差距", "讓模型迷路", "刪除資料", "增加亂數"], a: 0, n: "Loss 越低代表模型越準。" },
+        { c: "tool", q: "Fooocus 的 `Vary (Strong)` 相當於 SD WebUI 的？", o: ["High Denoising Strength 的 Img2Img", "Low Denoising Strength", "Inpaint", "Upscale"], a: 0, n: "Vary Strong 代表重繪幅度大，Denoising strength 較高。" },
+        { c: "prompt", q: "想要生成「扁平化設計」圖示，可用？", o: ["flat design, vector art, minimal", "photorealistic", "3d render", "oil painting"], a: 0, n: "Flat design 是扁平化。" },
+        { c: "law", q: "將 AI 生成圖宣稱為「人類親手繪製」並參賽，涉及？", o: ["詐欺或違反比賽規則", "沒問題", "言論自由", "著作權"], a: 0, n: "這是誠信問題，可能構成詐欺得利。" },
     ];
 
     // 系統邏輯
