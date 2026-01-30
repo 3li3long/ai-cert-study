@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生成式 AI 美術設計認證 - 終極完整講義 (50+頁詳解版)</title>
+    <title>生成式 AI 美術設計認證 - 終極完整講義 (Adobe增強版)</title>
     <style>
         :root {
             --primary: #2563eb;
             --secondary: #1e40af;
             --accent: #f59e0b;
+            --adobe: #e31837; /* Adobe 品牌紅 */
             --text: #1f2937;
             --bg: #f3f4f6;
             --slide-bg: #ffffff;
@@ -64,6 +65,17 @@
             border-color: var(--primary);
         }
 
+        /* Adobe 特殊按鈕樣式 */
+        .chapter-btn.adobe-btn {
+            border-color: #991b1b;
+            color: #fca5a5;
+        }
+        .chapter-btn.adobe-btn:hover, .chapter-btn.adobe-btn.active {
+            background-color: var(--adobe);
+            color: white;
+            border-color: var(--adobe);
+        }
+
         /* Slide Container */
         .slide-container {
             flex: 1;
@@ -75,7 +87,7 @@
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            padding: 20px 20px 80px 20px; /* Bottom padding for controls */
+            padding: 20px 20px 80px 20px;
         }
 
         .slide {
@@ -93,29 +105,15 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            /* Scrollbar styling */
             scrollbar-width: thin;
             scrollbar-color: #cbd5e1 transparent;
         }
 
-        .slide::-webkit-scrollbar {
-            width: 8px;
-        }
-        .slide::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1;
-            border-radius: 4px;
-        }
+        .slide::-webkit-scrollbar { width: 8px; }
+        .slide::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
 
-        .slide.active {
-            opacity: 1;
-            transform: translateX(0);
-            z-index: 10;
-        }
-
-        .slide.prev {
-            transform: translateX(-100%);
-            opacity: 0;
-        }
+        .slide.active { opacity: 1; transform: translateX(0); z-index: 10; }
+        .slide.prev { transform: translateX(-100%); opacity: 0; }
 
         /* Content Styling */
         h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 1.5rem; text-align: center; }
@@ -139,10 +137,31 @@
         /* Boxes */
         .highlight-box { background: #eff6ff; border-left: 5px solid var(--primary); padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
         .warning-box { background: #fef2f2; border-left: 5px solid #ef4444; padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
+        .adobe-box { background: #fff1f2; border-left: 5px solid var(--adobe); padding: 15px; margin: 15px 0; border-radius: 0 8px 8px 0; }
         .lee-note { background: #f0fdf4; border: 1px solid #86efac; padding: 15px; border-radius: 8px; margin-top: 15px; position: relative; }
         .lee-note::before { content: '🎓 李宏毅教授重點'; position: absolute; top: -12px; left: 15px; background: #166534; color: white; padding: 2px 10px; font-size: 0.8rem; border-radius: 10px; font-weight: bold; }
         .exam-tip { background: #fff7ed; border: 2px dashed #f97316; padding: 15px; border-radius: 8px; margin-top: 15px; }
         .exam-tip-title { color: #c2410c; font-weight: bold; display: block; margin-bottom: 5px; }
+
+        /* Colab Button */
+        .colab-link-btn {
+            display: inline-block;
+            background-color: #f9ab00; /* Colab Orange */
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin: 10px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .colab-link-btn:hover {
+            transform: translateY(-2px);
+            background-color: #e39b00;
+        }
+        .colab-link-btn::before { content: '▶ '; }
 
         /* Controls */
         .controls {
@@ -180,7 +199,7 @@
         /* Floating Exam Button */
         .mock-exam-btn {
             position: fixed;
-            top: 70px; /* Below nav bar */
+            top: 70px;
             right: 20px;
             background-color: var(--btn-color);
             color: white;
@@ -213,8 +232,9 @@
         <button class="chapter-btn active" onclick="jumpToChapter(0)">Day 1: AI 原理</button>
         <button class="chapter-btn" onclick="jumpToChapter(10)">Day 2: 擴散模型</button>
         <button class="chapter-btn" onclick="jumpToChapter(20)">Day 3: 法規與美學</button>
-        <button class="chapter-btn" onclick="jumpToChapter(30)">Day 4: Fooocus 攻略</button>
-        <button class="chapter-btn" onclick="jumpToChapter(42)">Day 5: 術科必殺技</button>
+        <button class="chapter-btn" onclick="jumpToChapter(30)">Day 4: Fooocus</button>
+        <button class="chapter-btn adobe-btn" onclick="jumpToChapter(42)">Day 4+: Adobe攻略</button>
+        <button class="chapter-btn" onclick="jumpToChapter(50)">Day 5: 術科必殺</button>
     </div>
 
     <a href="mock_exam.html" target="_blank" class="mock-exam-btn">📝 開始模擬測驗</a>
@@ -225,12 +245,11 @@
 
     <div class="controls">
         <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅ 上一頁</button>
-        <span class="progress-text" id="pageNum">1 / 55</span>
+        <span class="progress-text" id="pageNum">1 / 62</span>
         <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">下一頁 ➡</button>
     </div>
 
     <script>
-        // 55+ Slides Content Data
         const slidesData = [
             // --- Day 1: AI 基礎與原理 (李宏毅觀點) ---
             {
@@ -239,7 +258,7 @@
                     <h1>🚀 Day 1: AI 核心原理啟動</h1>
                     <div class="highlight-box">
                         <p><strong>今日目標：</strong> 理解「AI 到底怎麼思考的？」破解學科最難的理論題。</p>
-                        <p><strong>參考來源：</strong> 李宏毅教授 GenAI 導論 (第1-3講)</p>
+                        <p><strong>特別更新：</strong> 新增 Adobe Firefly 與 Google Colab 免安裝實戰教學。</p>
                     </div>
                     <h3>本日學習清單：</h3>
                     <ul>
@@ -762,6 +781,27 @@
                 `
             },
             {
+                title: "Day 4-1+ (免安裝): Google Colab",
+                content: `
+                    <h2>⚡ 懶人專用：Fooocus Colab 一鍵啟動</h2>
+                    <p>考試現場雖然會提供軟體，但為了在家練習，推薦使用 Google Colab。</p>
+                    
+                    <a href="https://colab.research.google.com/github/lllyasviel/Fooocus/blob/main/fooocus_colab.ipynb" target="_blank" class="colab-link-btn">🚀 點擊這裡：開啟 Fooocus (Colab)</a>
+
+                    <h3>操作步驟 (手機/平板/爛電腦皆可)：</h3>
+                    <ol>
+                        <li>點擊上方橘色按鈕。</li>
+                        <li>登入你的 Google 帳號。</li>
+                        <li>進入後，點擊左上角的 <strong>"Play (三角形圖示)"</strong> 按鈕。</li>
+                        <li>等待 5-10 分鐘，直到下方出現 <code>gradio.live</code> 結尾的網址。</li>
+                        <li>點擊該網址，即可進入 Fooocus 操作介面！</li>
+                    </ol>
+                    <div class="warning-box">
+                        <p><strong>注意：</strong> Colab 免費版有時會斷線，記得生成好的圖要馬上右鍵下載存檔。</p>
+                    </div>
+                `
+            },
+            {
                 title: "Day 4-2: 基礎設定 (Setting)",
                 content: `
                     <h2>Setting 分頁重點</h2>
@@ -917,9 +957,132 @@
                         <li><strong>Image Prompt</strong> 讓你參考構圖。</li>
                         <li><strong>PyraCanny</strong> 用於線稿上色。</li>
                         <li><strong>FaceSwap</strong> 用於換臉。</li>
+                        <li>免安裝可使用 <strong>Google Colab</strong>。</li>
                     </ul>
                     <hr>
-                    <p style="text-align: center; font-size: 1.5rem;">🎉 Day 4 完成！準備進入 Day 5：術科必殺技。</p>
+                    <p style="text-align: center; font-size: 1.5rem;">🎉 Day 4 完成！準備進入 Day 4+：Adobe 雲端攻略。</p>
+                `
+            },
+
+            // --- Day 4+: Adobe Firefly & Photoshop Web ---
+            {
+                title: "Day 4+: Adobe 雲端攻略",
+                content: `
+                    <h1>🔥 Day 4+: Adobe Firefly & PS Web</h1>
+                    <div class="adobe-box">
+                        <p><strong>特別增強章節：</strong> 考試除了 Fooocus，也常出現 Adobe 工具。掌握雲端版 (Web) 操作是拿分關鍵。</p>
+                    </div>
+                    <h3>核心工具：</h3>
+                    <ul>
+                        <li><strong>Adobe Firefly (Web)：</strong> 快速文生圖、生成填色。</li>
+                        <li><strong>Photoshop Web：</strong> 線上版 PS，必考「生成擴充」與「移除物件」。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 4+: Firefly 網頁版操作",
+                content: `
+                    <h2>Adobe Firefly (firefly.adobe.com)</h2>
+                    <p>如果你沒有安裝 PS，這是最棒的備案。</p>
+
+                    <h3>功能 1: Text to Image (文生圖)</h3>
+                    <ul>
+                        <li><strong>介面：</strong> 下方輸入 Prompt (支援中文！)。</li>
+                        <li><strong>Content Type：</strong> 右側選擇 Photo (寫實) 或 Art (藝術)。</li>
+                        <li><strong>Structure Reference (結構參考)：</strong> 上傳一張圖，讓 AI 參考它的構圖 (類似 ControlNet)。</li>
+                    </ul>
+
+                    <h3>功能 2: Generative Fill (生成填色)</h3>
+                    <ul>
+                        <li>上傳圖片 -> 選擇筆刷塗抹 -> 輸入指令 (如 "red tie") -> 生成。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 4+: Photoshop Web 介面",
+                content: `
+                    <h2>Photoshop Web 版攻略</h2>
+                    <p>考試若使用 Chromebook 或雲端機台，可能會開 PS Web。</p>
+
+                    <h3>Contextual Task Bar (關聯式工作列)</h3>
+                    <p>這是浮在畫面上的長條工具列，是 AI 功能的核心。</p>
+                    <ul>
+                        <li><strong>Select Subject (選取主體)：</strong> 一鍵去背神器。</li>
+                        <li><strong>Generative Fill (生成填色)：</strong> 所有的 AI 魔法都在這按鈕裡。</li>
+                    </ul>
+                `
+            },
+            {
+                title: "Day 4+: PS Web - 移除路人",
+                content: `
+                    <h2>考題：移除路人/雜物</h2>
+                    <div class="highlight-box">
+                        <p><strong>操作 SOP：</strong></p>
+                    </div>
+                    <ol>
+                        <li>使用 <strong>Lasso Tool (套索工具)</strong> 圈選路人 (不用太精準)。</li>
+                        <li>工作列點擊 <strong>Generative Fill</strong>。</li>
+                        <li><strong>重點：</strong> 輸入框「留空 (不打字)」。</li>
+                        <li>點擊 Generate。</li>
+                        <li>AI 會自動計算周圍背景，把路人變不見。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 4+: PS Web - 換背景",
+                content: `
+                    <h2>考題：更換背景</h2>
+                    
+                    <ol>
+                        <li>點擊 <strong>Select Subject (選取主體)</strong>。</li>
+                        <li>點擊工作列上的 <strong>Invert Selection (反轉選取)</strong> (現在選到的是背景)。</li>
+                        <li>點擊 Generative Fill。</li>
+                        <li>輸入 Prompt：<code>cyberpunk city street, neon lights</code>。</li>
+                        <li>Generate -> 主體保留，背景換掉。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 4+: PS Web - 生成擴充",
+                content: `
+                    <h2>考題：圖片擴充 (Generative Expand)</h2>
+                    <p>把直式照片變成橫式海報。</p>
+
+                    <ol>
+                        <li>選擇 <strong>Crop Tool (裁切工具)</strong>。</li>
+                        <li>將畫布邊框往左右拉開 (拉出空白處)。</li>
+                        <li>工作列會自動出現 <strong>Generative Expand</strong>。</li>
+                        <li>輸入 Prompt (或留空)。</li>
+                        <li>Generate -> AI 自動補完左右兩邊的畫面。</li>
+                    </ol>
+                `
+            },
+            {
+                title: "Day 4+: 選擇困難？",
+                content: `
+                    <h2>Fooocus vs. Adobe：考試怎麼選？</h2>
+                    
+                    <ul>
+                        <li><strong>用 Fooocus 當：</strong> 題目要求特定畫風 (Style)、大量生成、或精細修手 (Inpaint)。</li>
+                        <li><strong>用 Adobe 當：</strong> 題目要求「去背」、「合成」、「擴充背景」或「移除路人」。</li>
+                    </ul>
+                    <div class="exam-tip">
+                        <p><strong>混合技：</strong> 先用 Fooocus 生圖，再丟進 PS Web 去背合成文字，是拿高分的保證。</p>
+                    </div>
+                `
+            },
+            {
+                title: "Day 4+: Day 4+ 總結",
+                content: `
+                    <h2>Day 4+ 重點回顧</h2>
+                    <ul>
+                        <li><strong>Firefly</strong> 支援中文 Prompt，且有結構參考功能。</li>
+                        <li><strong>PS Web</strong> 的核心是「關聯式工作列」。</li>
+                        <li>移除物件 = 選取 + <strong>生成填色 (留空)</strong>。</li>
+                        <li>擴充背景 = <strong>裁切工具</strong> + Generative Expand。</li>
+                    </ul>
+                    <hr>
+                    <p style="text-align: center; font-size: 1.5rem;">🎉 Adobe 攻略完成！進入最後階段：Day 5 術科必殺。</p>
                 `
             },
 
@@ -1141,7 +1304,8 @@
             else if(currentSlide < 20) chapterBtns[1].classList.add('active');
             else if(currentSlide < 30) chapterBtns[2].classList.add('active');
             else if(currentSlide < 42) chapterBtns[3].classList.add('active');
-            else chapterBtns[4].classList.add('active');
+            else if(currentSlide < 50) chapterBtns[4].classList.add('active'); // Adobe & Colab
+            else chapterBtns[5].classList.add('active');
         }
 
         // Keyboard & Touch
