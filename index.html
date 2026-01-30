@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生成式 AI 美術認證 - 終極全能版 (講義+題庫)</title>
+    <title>生成式 AI 美術設計認證 - 終極完整講義</title>
     <style>
         :root {
             --primary: #2563eb;
@@ -16,8 +16,6 @@
             --btn-color: #ef4444;
             --nav-bg: #1e293b;
             --nav-text: #e2e8f0;
-            --success: #10b981;
-            --error: #ef4444;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,7 +30,7 @@
             flex-direction: column;
         }
 
-        /* --- 講義模式 (Slides) CSS --- */
+        /* Top Navigation Bar */
         .chapter-nav {
             background-color: var(--nav-bg);
             color: var(--nav-text);
@@ -61,6 +59,7 @@
         .chapter-btn.adobe-btn { border-color: #991b1b; color: #fca5a5; }
         .chapter-btn.adobe-btn:hover, .chapter-btn.adobe-btn.active { background-color: var(--adobe); color: white; border-color: var(--adobe); }
 
+        /* Slide Container */
         .slide-container {
             flex: 1;
             position: relative;
@@ -90,12 +89,17 @@
             display: flex;
             flex-direction: column;
             scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
         }
+        .slide::-webkit-scrollbar { width: 8px; }
+        .slide::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+
         .slide.active { opacity: 1; transform: translateX(0); z-index: 10; }
         .slide.prev { transform: translateX(-100%); opacity: 0; }
 
         .slide-footer { margin-top: auto; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: right; font-size: 0.9rem; color: #94a3b8; }
 
+        /* Controls */
         .controls {
             position: fixed;
             bottom: 0;
@@ -112,7 +116,43 @@
             backdrop-filter: blur(5px);
         }
 
-        /* --- 講義內容樣式 --- */
+        button.nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: bold;
+        }
+        button.nav-btn:hover { background-color: var(--secondary); }
+        button.nav-btn:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+
+        .progress-text { font-weight: bold; color: var(--secondary); min-width: 80px; text-align: center; }
+
+        /* Floating Exam Button */
+        .mock-exam-btn {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: var(--btn-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            z-index: 999;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .mock-exam-btn:hover { transform: translateY(-2px); background-color: #dc2626; }
+
+        /* Content Styling */
         h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 1.5rem; text-align: center; }
         h2 { color: var(--secondary); font-size: 1.8rem; margin-bottom: 1.2rem; border-bottom: 3px solid var(--accent); display: inline-block; padding-bottom: 5px; }
         h3 { color: #334155; font-size: 1.4rem; margin: 1.5rem 0 0.8rem; font-weight: 700; display: flex; align-items: center; }
@@ -127,75 +167,19 @@
         .lee-note { background: #f0fdf4; border: 1px solid #86efac; padding: 15px; border-radius: 8px; margin-top: 15px; position: relative; }
         .lee-note::before { content: '🎓 李宏毅教授重點'; position: absolute; top: -12px; left: 15px; background: #166534; color: white; padding: 2px 10px; font-size: 0.8rem; border-radius: 10px; font-weight: bold; }
         .exam-tip { background: #fff7ed; border: 2px dashed #f97316; padding: 15px; border-radius: 8px; margin-top: 15px; }
+        
         .colab-link-btn { display: inline-block; background-color: #f9ab00; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 1.1rem; margin: 10px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s; }
         .colab-link-btn:hover { transform: translateY(-2px); background-color: #e39b00; }
 
-        /* --- 題庫模式 (Quiz) CSS --- */
-        #quiz-view {
-            display: none; /* 預設隱藏 */
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #f8fafc;
-            z-index: 2000;
-            overflow-y: auto;
-            padding: 20px;
-        }
-        
-        .quiz-container {
-            background-color: white;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-        }
-
-        .stats-bar { display: flex; justify-content: space-between; background: #e0e7ff; padding: 12px 24px; border-radius: 12px; font-weight: bold; color: #3730a3; margin-bottom: 2rem; }
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; text-transform: uppercase; background: #dbeafe; color: #1e40af; }
-        .question-text { font-size: 1.3rem; font-weight: 700; line-height: 1.5; margin-bottom: 25px; color: #0f172a; }
-        .options-grid { display: flex; flex-direction: column; gap: 12px; }
-        .option-btn { padding: 18px 24px; border: 2px solid #e2e8f0; background: white; border-radius: 10px; cursor: pointer; text-align: left; font-size: 1.05rem; transition: all 0.2s; color: #334155; position: relative; }
-        .option-btn:hover:not(:disabled) { border-color: var(--primary); background-color: #eef2ff; transform: translateX(5px); }
-        .option-btn.correct { background-color: #dcfce7; border-color: var(--success); color: #14532d; }
-        .option-btn.wrong { background-color: #fee2e2; border-color: var(--error); color: #7f1d1d; }
-        .feedback { margin-top: 25px; padding: 20px; background: #f8fafc; border-left: 6px solid var(--primary); border-radius: 0 8px 8px 0; display: none; }
-        
-        .quiz-nav-btn {
-            display: block; width: 100%; padding: 16px; margin-top: 25px; background-color: var(--primary); color: white; border: none; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; text-align: center;
-        }
-        
-        /* 切換按鈕 */
-        .toggle-mode-btn {
-            position: fixed;
-            top: 70px;
-            right: 20px;
-            background-color: var(--btn-color);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
-            z-index: 3000; /* 最上層 */
-            transition: all 0.3s;
-            cursor: pointer;
-            border: 2px solid white;
-        }
-        .toggle-mode-btn:hover { transform: translateY(-2px); background-color: #dc2626; }
-
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-
         @media (max-width: 768px) {
             .slide { padding: 25px; width: 95%; top: 10px; height: 75%; }
-            .toggle-mode-btn { bottom: 90px; top: auto; right: 20px; }
-            .controls { padding-bottom: 20px; }
+            .mock-exam-btn { bottom: 80px; top: auto; right: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 頂部導航 (講義模式) -->
-    <div class="chapter-nav" id="chapterNav">
+    <div class="chapter-nav">
         <button class="chapter-btn active" onclick="jumpToChapter(0)">Day 1: AI 原理</button>
         <button class="chapter-btn" onclick="jumpToChapter(10)">Day 2: 擴散模型</button>
         <button class="chapter-btn" onclick="jumpToChapter(20)">Day 3: 法規與美學</button>
@@ -204,57 +188,22 @@
         <button class="chapter-btn" onclick="jumpToChapter(50)">Day 5: 術科必殺</button>
     </div>
 
-    <!-- 模式切換按鈕 -->
-    <button class="toggle-mode-btn" id="modeBtn" onclick="toggleMode()">📝 開始模擬測驗</button>
+    <a href="mock_exam.html" class="mock-exam-btn">📝 開始模擬測驗</a>
 
-    <!-- 講義容器 -->
-    <div class="slide-container" id="slideView">
-        <div id="slider-content"></div>
+    <div class="slide-container" id="slider">
+        <!-- Slides will be injected via JS -->
     </div>
 
-    <!-- 講義控制列 -->
-    <div class="controls" id="slideControls">
+    <div class="controls">
         <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">⬅ 上一頁</button>
         <span class="progress-text" id="pageNum">1 / 62</span>
         <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">下一頁 ➡</button>
     </div>
 
-    <!-- 題庫容器 (隱藏) -->
-    <div id="quiz-view">
-        <div class="quiz-container">
-            <h1 style="text-align:center;">💯 AI 美術認證百題猛將傳</h1>
-            <div class="stats-bar">
-                <span id="quiz-progress">題目: 1 / 50</span>
-                <span id="quiz-score">得分: 0</span>
-            </div>
-            
-            <div id="question-box"></div>
-            
-            <div id="feedback" class="feedback">
-                <span style="font-weight:bold; color:var(--primary);">💡 專家解析：</span>
-                <div id="feedback-text" style="margin-top:5px;"></div>
-            </div>
-
-            <button id="quiz-next-btn" class="quiz-nav-btn" style="display:none;" onclick="nextQuestion()">下一題 ⮕</button>
-            
-            <div id="quiz-result" style="display:none; text-align:center;">
-                <h2 id="final-score-text" style="font-size:3rem; color:var(--primary);"></h2>
-                <p id="final-msg"></p>
-                <div id="weakness-box" style="text-align:left; background:#eff6ff; padding:15px; border-radius:10px; margin-top:20px;"></div>
-                <button class="quiz-nav-btn" onclick="restartQuiz()">🔄 重新挑戰</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // ==========================================
-        // 1. 資料庫 (講義 + 題庫)
-        // ==========================================
-        
-        // 講義資料
         const slidesData = [
             // Day 1
-            {t: "Day 1-1: 課程啟動", c: "<h1>🚀 Day 1: AI 核心原理啟動</h1><div class='highlight-box'><p><strong>今日目標：</strong> 理解「AI 到底怎麼思考的？」破解學科最難的理論題。</p><p><strong>特別更新：</strong> 內建模擬題庫，點擊右上角按鈕即可開練！</p></div>"},
+            {t: "Day 1-1: 課程啟動", c: "<h1>🚀 Day 1: AI 核心原理啟動</h1><div class='highlight-box'><p><strong>今日目標：</strong> 理解「AI 到底怎麼思考的？」破解學科最難的理論題。</p><p><strong>特別更新：</strong> 點擊右上角進入題庫，Day 4+ 有 Colab 免安裝連結。</p></div>"},
             {t: "Day 1-2: 生成式 vs 判別式", c: "<h2>生成式 vs. 判別式</h2><ul><li><strong>判別式 AI：</strong> 分類、預測 (如：人臉辨識、股市)。</li><li><strong>生成式 AI：</strong> 創造新資料 (如：ChatGPT, Stable Diffusion)。</li></ul>"},
             {t: "Day 1-3: 文字接龍", c: "<h2>LLM 運作：文字接龍</h2><div class='lee-note'><p>李宏毅教授強調：ChatGPT 本質是<strong>「文字接龍機器」</strong>。它計算「下一個字出現的機率」，而不是在思考。</p></div>"},
             {t: "Day 1-4: Token", c: "<h2>Token (標記)</h2><p>AI 讀不懂文字，它讀的是 Token (數字向量)。</p><div class='exam-tip'><p><strong>考點：</strong> 1 個單字可能由多個 Tokens 組成，Token 不等於字數。</p></div>"},
@@ -291,6 +240,7 @@
 
             // Day 4
             {t: "Day 4-1: Fooocus", c: "<h1>🛠️ Day 4: Fooocus 攻略</h1><div class='highlight-box'><p>考試指定軟體，極簡版 SDXL。</p></div>"},
+            {t: "Day 4-1+ (免安裝): Google Colab", c: "<h2>⚡ 懶人專用：Fooocus Colab 一鍵啟動</h2><p>考試現場雖然會提供軟體，但為了在家練習，推薦使用 Google Colab。</p><a href='https://colab.research.google.com/github/lllyasviel/Fooocus/blob/main/fooocus_colab.ipynb' target='_blank' class='colab-link-btn'>🚀 點擊這裡：開啟 Fooocus (Colab)</a><h3>操作步驟：</h3><ol><li>點擊上方橘色按鈕 (會開新視窗)。</li><li>登入 Google 帳號。</li><li>點擊左上角的 <strong>\"Play (三角形)\"</strong> 按鈕。</li><li>等待 5-10 分鐘，直到出現 <code>gradio.live</code> 網址，點進去就是了！</li></ol>"},
             {t: "Day 4-2: Setting", c: "<h2>Setting 設定</h2><p>記得勾 Advanced。Performance 選 Quality。Aspect Ratio 看題目要求。</p>"},
             {t: "Day 4-3: Style", c: "<h2>Style 風格</h2><p>Fooocus 神器。直接勾選 <code>SAI-3D</code> (卡通) 或 <code>Cinematic</code> (寫實)。不用自己寫 Prompt。</p>"},
             {t: "Day 4-4: Model", c: "<h2>Model & LoRA</h2><p>Base Model 選 Juggernaut (寫實) 或 BluePencil (動漫)。LoRA 權重設 0.5-0.8。</p>"},
@@ -303,7 +253,6 @@
 
             // Day 4+
             {t: "Day 4+: Adobe & Colab", c: "<h1>🔥 Day 4+: Adobe & Colab</h1><div class='adobe-box'><p>補強 Adobe 雲端工具與免安裝練習法。</p></div>"},
-            {t: "Day 4+: Colab", c: "<h2>⚡ Fooocus Colab 免安裝</h2><a href='https://colab.research.google.com/github/lllyasviel/Fooocus/blob/main/fooocus_colab.ipynb' target='_blank' class='colab-link-btn'>🚀 點擊開啟 Colab</a><p>登入 Google -> 點擊 Play 三角形 -> 等網址出現。</p>"},
             {t: "Day 4+: Firefly", c: "<h2>Adobe Firefly</h2><p>支援中文 Prompt。<strong>生成填色 (Generative Fill)</strong> 是強項。</p>"},
             {t: "Day 4+: PS Web 去背", c: "<h2>PS Web: 移除物件</h2><p>選取物件 -> 點 Generative Fill -> <strong>留空不打字</strong> -> 生成。</p>"},
             {t: "Day 4+: PS Web 擴充", c: "<h2>PS Web: 生成擴充</h2><p>裁切工具拉大畫布 -> Generative Expand -> 生成。</p>"},
@@ -321,360 +270,79 @@
             {t: "Day 5-8: 結語", c: "<h1>🎓 準備好了！</h1><p>點擊右上角按鈕，開始 100 題模擬測驗吧！祝高分通過！</p>"}
         ];
 
-        // 題庫資料 (100題精選修正版)
-        const quizBank = [
-            { c: "theory", q: "LLM (大型語言模型) 的核心運作機制是？", o: ["理解情感", "文字接龍 (預測下一個 Token)", "資料庫檢索", "邏輯推理"], a: 1, n: "LLM 本質是機率模型，預測下一個出現機率最高的 Token。" },
-            { c: "theory", q: "1 個 Token 等於 1 個單字嗎？", o: ["是", "否，1 個單字可能由多個 Token 組成", "Token 是標點", "Token 是像素"], a: 1, n: "Token 是向量化單位，不一定等於單字。" },
-            { c: "theory", q: "生成式 AI 產生「幻覺」的原因？", o: ["說謊", "機率模型依機率強行生成", "網路斷線", "資料庫壞了"], a: 1, n: "AI 不是查證，是依機率生成，所以會一本正經胡說八道。" },
-            { c: "theory", q: "RLHF 是什麼？", o: ["檔案格式", "人類回饋強化學習", "隨機學習", "讀取硬碟"], a: 1, n: "RLHF 讓 AI 對齊人類價值觀 (禮貌、安全)。" },
-            { c: "theory", q: "擴散模型 (Diffusion) 的原理？", o: ["拼貼", "去噪 (Denoising)", "壓縮", "濾鏡"], a: 1, n: "從雜訊中逐步移除噪聲還原影像。" },
-            { c: "theory", q: "CLIP 模型的作用？", o: ["畫圖", "將文字轉為圖像能理解的向量", "放大", "產生雜訊"], a: 1, n: "CLIP 是連接文字與圖像的橋樑。" },
-            { c: "theory", q: "Transformer 的核心機制？", o: ["卷積", "注意力機制 (Self-Attention)", "池化", "遞歸"], a: 1, n: "Attention 讓模型關注上下文關聯。" },
-            { c: "theory", q: "下列何者是生成式 AI？", o: ["垃圾郵件過濾", "門禁系統", "Stable Diffusion", "股市預測"], a: 2, n: "創造新資料的是生成式。" },
-            { c: "theory", q: "VAE 的作用？", o: ["理解文字", "去噪", "將 Latent 解碼回像素圖片", "亂數"], a: 2, n: "VAE 負責最後將數學特徵轉回圖片。" },
-            { c: "theory", q: "預訓練後的模型稱為？", o: ["ChatBot", "Base Model", "Plugin", "LoRA"], a: 1, n: "懂知識但不懂指令的模型。" },
-            { c: "theory", q: "Temperature 控制什麼？", o: ["風扇", "隨機性與創造力", "色溫", "解析度"], a: 1, n: "溫度越高，隨機性(創意)越高。" },
-            { c: "theory", q: "CoT (思維鏈) 是？", o: ["畫鎖鏈", "請 AI 一步步思考", "加密", "加速"], a: 1, n: "引導 AI 展示推理步驟。" },
-            { c: "theory", q: "Zero-shot 是？", o: ["不給範例直接問", "訓練失敗", "耗電零", "畫0張"], a: 0, n: "無範例提示。" },
-            { c: "theory", q: "In-context Learning 是？", o: ["上學", "在 Prompt 給範例模仿", "聯網", "讀檔"], a: 1, n: "Few-shot learning。" },
-            { c: "theory", q: "Overfitting (過擬合) 後果？", o: ["變聰明", "死背資料無法泛化", "變快", "幻覺"], a: 1, n: "缺乏應變能力。" },
-            { c: "theory", q: "Fine-tuning 目的？", o: ["重練", "調整參數適應特定任務", "修顯卡", "增加體積"], a: 1, n: "微調以專精特定領域。" },
-            { c: "prompt", q: "Prompt 中增強權重最強的寫法？", o: ["(cat)", "((cat))", "(cat:1.5)", "[cat]"], a: 2, n: "直接指定數值最強。" },
-            { c: "prompt", q: "`[keyword]` 代表？", o: ["增強", "減弱 (De-emphasis)", "隨機", "註解"], a: 1, n: "方括號是減弱。" },
-            { c: "prompt", q: "不想看到手指壞掉，應加在哪？", o: ["Positive", "Negative Prompt", "Style", "Model"], a: 1, n: "負面提示詞。" },
-            { c: "prompt", q: "`break` 的功能？", o: ["休息", "中斷語意關聯", "刪除", "停止"], a: 1, n: "防止前後文顏色混染。" },
-            { c: "prompt", q: "乾淨背景的 Prompt？", o: ["detailed", "scenery", "clean background, negative space", "crowded"], a: 2, n: "留白專用詞。" },
-            { c: "prompt", q: "80 年代風格？", o: ["cyberpunk", "vaporwave, retro", "futuristic", "medieval"], a: 1, n: "復古風格。" },
-            { c: "prompt", q: "`masterpiece` 是什麼詞？", o: ["風格", "品質詞", "內容", "負面"], a: 1, n: "起手式必備。" },
-            { c: "prompt", q: "`(white background:1.3)` 意思？", o: ["1.3個", "權重提升 30%", "寬度1.3", "透明"], a: 1, n: "加強權重。" },
-            { c: "prompt", q: "固定長相最好的方法？", o: ["Prompt", "FaceSwap 或 LoRA", "CFG", "Negative"], a: 1, n: "Prompt 很難固定長相。" },
-            { c: "prompt", q: "Prompt 順序重要嗎？", o: ["不重要", "重要，越前面權重越高", "中間重要", "後面重要"], a: 1, n: "越前面越重要。" },
-            { c: "prompt", q: "角色設定圖 Prompt？", o: ["selfie", "character sheet, multiple views", "landscape", "macro"], a: 1, n: "三視圖專用。" },
-            { c: "prompt", q: "避免文字出現？", o: ["text, watermark", "no text", "font", "book"], a: 0, n: "負面提示詞。" },
-            { c: "prompt", q: "`solo` 意思？", o: ["唱歌", "單人", "很多", "背景"], a: 1, n: "只有一個主體。" },
-            { c: "tool", q: "Fooocus Style 功能？", o: ["切換面板", "自動注入風格 Prompt", "調整尺寸", "上傳"], a: 1, n: "懶人風格包。" },
-            { c: "tool", q: "CFG 太高會？", o: ["黑白", "過曝、線條崩壞", "模糊", "變快"], a: 1, n: "過度引導。" },
-            { c: "tool", q: "Steps 建議值？", o: ["1-5", "20-40", "100+", "1000"], a: 1, n: "CP值最高。" },
-            { c: "tool", q: "Seed 作用？", o: ["種植物", "控制初始雜訊，固定可重現", "解析度", "權重"], a: 1, n: "重現圖片的鑰匙。" },
-            { c: "tool", q: "Inpaint 用途？", o: ["刪圖", "修復瑕疵", "放大", "訓練"], a: 1, n: "局部重繪。" },
-            { c: "tool", q: "Outpaint 用途？", o: ["縮小", "擴充畫布", "塗黑", "對比"], a: 1, n: "補完畫面。" },
-            { c: "tool", q: "LoRA 建議權重？", o: ["0.1", "0.6 ~ 0.8", "1.5", "2.0"], a: 1, n: "避免過擬合。" },
-            { c: "tool", q: "PyraCanny 作用？", o: ["換臉", "抓邊緣構圖", "抓顏色", "抓景深"], a: 1, n: "線稿上色用。" },
-            { c: "tool", q: "CPDS 作用？", o: ["顏色", "景深結構", "人臉", "風格"], a: 1, n: "抓空間結構。" },
-            { c: "tool", q: "FaceSwap 作用？", o: ["模糊", "換臉", "測年齡", "化妝"], a: 1, n: "換臉。" },
-            { c: "tool", q: "放大圖片用？", o: ["Crop", "Upscale", "Rotate", "Filter"], a: 1, n: "增加細節放大。" },
-            { c: "tool", q: "Refiner 用途？", o: ["降畫質", "最後修飾細化", "刪除", "格式化"], a: 1, n: "優化紋理。" },
-            { c: "tool", q: "Euler a 特性？", o: ["不確定性高 (Ancestral)", "最寫實", "最慢", "不支援"], a: 0, n: "畫面會一直變。" },
-            { c: "tool", q: "DPM++ 2M Karras 特性？", o: ["速度快品質好", "最古老", "馬賽克", "只能動漫"], a: 0, n: "Fooocus 預設。" },
-            { c: "tool", q: "Clip Skip 2 用於？", o: ["寫實", "二次元動漫", "黑白", "風景"], a: 1, n: "動漫模型常用。" },
-            { c: "tool", q: "PS 移除路人 Prompt？", o: ["remove", "clean", "留空", "transparent"], a: 2, n: "留空自動補。" },
-            { c: "tool", q: "Stop At 0.5 意思？", o: ["當機", "參考影響力只到 50%", "透明度", "成功率"], a: 1, n: "後半段自由發揮。" },
-            { c: "tool", q: "Upscale 2x 意思？", o: ["時間2倍", "邊長放大2倍", "檔案2倍", "美觀2倍"], a: 1, n: "解析度變大。" },
-            { c: "tool", q: "Vary (Strong) 差別？", o: ["大改構圖", "微調", "沒差", "變快"], a: 0, n: "重繪幅度大。" },
-            { c: "tool", q: "圖片灰灰的原因？", o: ["缺 VAE", "Prompt 長", "Step 多", "Seed 錯"], a: 0, n: "VAE 解碼顏色。" },
-            { c: "law", q: "純 AI 圖著作權？", o: ["使用者", "AI 公司", "無著作權", "硬體商"], a: 2, n: "非人類創作。" },
-            { c: "law", q: "大幅精修後？", o: ["全有", "人為部分受保護", "全無", "公司有"], a: 1, n: "保護人類創作部分。" },
-            { c: "law", q: "Deepfake 色情片？", o: ["賠錢", "加重誹謗、刑責", "無罪", "倫理"], a: 1, n: "台灣已修法。" },
-            { c: "law", q: "訓練資料版權？", o: ["合法", "非法", "合理使用爭議中", "付費"], a: 2, n: "灰色地帶。" },
-            { c: "law", q: "生成米老鼠商用？", o: ["沒事", "侵權", "老了", "自由"], a: 1, n: "實質相似即侵權。" },
-            { c: "law", q: "Bias 意思？", o: ["吃辣", "刻板印象", "過熱", "拒絕"], a: 1, n: "資料不平衡。" },
-            { c: "law", q: "機密資料輸入 AI？", o: ["沒事", "外洩風險", "變聰明", "變快"], a: 1, n: "會被用於訓練。" },
-            { c: "law", q: "人機協作登記？", o: ["全過", "排除 AI 部分", "不接受", "付錢"], a: 1, n: "美版權局規定。" },
-            { c: "law", q: "指名風格侵權？", o: ["侵權", "不侵權 (風格無版權)", "人格權", "違法"], a: 1, n: "風格不受保護。" },
-            { c: "law", q: "AI 詐欺？", o: ["詐欺罪", "著作權", "專利", "商標"], a: 0, n: "本質是詐欺。" },
-            { c: "design", q: "C.R.A.P.？", o: ["Create", "Contrast, Repetition, Alignment, Proximity", "Color", "Cut"], a: 1, n: "排版四原則。" },
-            { c: "design", q: "背景太花違反？", o: ["對比", "重複", "對齊", "親密"], a: 0, n: "看不到字。" },
-            { c: "design", q: "去背格式？", o: ["JPG", "PNG", "BMP", "TXT"], a: 1, n: "PNG 支援透明。" },
-            { c: "design", q: "三分法？", o: ["切三塊", "九宮格交叉點", "畫三分之一", "三色"], a: 1, n: "構圖法。" },
-            { c: "design", q: "CMYK 用於？", o: ["沒差", "印刷", "螢幕", "貴"], a: 1, n: "印刷色。" },
-            { c: "design", q: "印刷解析度？", o: ["72", "300", "一樣", "小"], a: 1, n: "300 dpi。" },
-            { c: "design", q: "互補色？", o: ["相鄰", "相對 (180度)", "90度", "同一"], a: 1, n: "對比強。" },
-            { c: "design", q: "暖色感覺？", o: ["冷靜", "熱情", "悲傷", "神秘"], a: 1, n: "紅黃橘。" },
-            { c: "design", q: "留白？", o: ["沒塗滿", "呼吸感", "偷懶", "省墨"], a: 1, n: "設計元素。" },
-            { c: "design", q: "低解析印刷？", o: ["拉大", "AI Upscale", "小畫家", "放棄"], a: 1, n: "需補點放大。" },
-            { c: "prompt", q: "`isometric` 用於？", o: ["等角視圖 (2.5D)", "自拍", "全景", "特寫"], a: 0, n: "遊戲/建築視角。" }, // 修正索引
-            { c: "prompt", q: "`bokeh` 意思？", o: ["散景 (模糊)", "波浪", "書", "黑"], a: 0, n: "攝影術語。" }, // 修正索引
-            { c: "prompt", q: "`impasto` 意思？", o: ["厚塗法", "線稿", "素描", "向量"], a: 0, n: "油畫技法。" }, // 修正索引
-            { c: "prompt", q: "`cyberpunk` 元素？", o: ["霓虹燈", "森林", "鄉村", "復古"], a: 0, n: "高科技低生活。" }, // 修正索引
-            { c: "tool", q: "LoRA 全名？", o: ["Low-Rank Adaptation", "Long Range", "Local", "Load"], a: 0, n: "低秩適應。" }, // 修正索引
-            { c: "prompt", q: "`chibi` 意思？", o: ["Q版", "赤壁", "翅膀", "吃"], a: 0, n: "二頭身。" }, // 修正索引
-            { c: "tool", q: "Highres Fix 用途？", o: ["修復破圖", "先畫小再放大重繪", "修色", "縮小"], a: 1, n: "避免構圖崩壞。" },
-            { c: "tool", q: "Fooocus 解析度？", o: ["512", "1152x896", "1920", "4K"], a: 1, n: "SDXL 最佳解析度。" },
-            { c: "law", q: "AI 翻唱？", o: ["侵犯錄音/公開傳輸權", "專利", "商標", "秘密"], a: 0, n: "聲音無權但錄音有。" },
-            { c: "tool", q: "OpenPose 用於？", o: ["邊緣", "骨架姿勢", "深度", "法線"], a: 1, n: "抓動作。" },
-            { c: "prompt", q: "電影光？", o: ["flat", "cinematic lighting", "sketch", "2d"], a: 1, n: "氛圍感。" },
-            { c: "law", q: "轉繪真人照？", o: ["不用", "需授權", "心情", "不商用"], a: 1, n: "重製改作。" },
-            { c: "theory", q: "SFT 是？", o: ["一階", "二階", "三階", "四階"], a: 1, n: "指令微調。" },
-            { c: "tool", q: "破圖原因？", o: ["CFG 太高", "Prompt 短", "Step 多", "解析度"], a: 0, n: "參數錯誤。" },
-            { c: "design", q: "JPG 缺點？", o: ["大", "破壞壓縮無透明", "色少", "無法顯"], a: 1, n: "畫質損耗。" },
-            { c: "tool", q: "Image Number 4？", o: ["畫質4", "一次4張", "4分", "4卡"], a: 1, n: "批次生成。" },
-            { c: "prompt", q: "`(red:0.5)`？", o: ["很紅", "減弱", "50個", "一半"], a: 1, n: "小於1減弱。" },
-            { c: "theory", q: "Transformer 誰提的？", o: ["OpenAI", "Google", "Meta", "MS"], a: 1, n: "2017 Google。" },
-            { c: "tool", q: "模型副檔名？", o: ["exe", "safetensors", "jpg", "txt"], a: 1, n: "安全格式。" },
-            { c: "law", q: "合理使用？", o: ["目的", "性質", "比例", "性別"], a: 3, n: "性別無關。" },
-            { c: "tool", q: "修臉用？", o: ["Restore Faces", "Highres", "Tiling", "Upscale"], a: 0, n: "專門修臉。" },
-            { c: "theory", q: "Latent Space？", o: ["太空", "數學特徵空間", "硬碟", "雲端"], a: 1, n: "去噪運算處。" },
-            { c: "tool", q: "Fooocus 核心？", o: ["1.5", "SDXL", "DALL-E", "MJ"], a: 1, n: "專為 XL 優化。" },
-            { c: "theory", q: "GPT 全名？", o: ["Generative Pre-trained Transformer", "Google", "General", "Great"], a: 0, n: "生成預訓練。" },
-            { c: "law", q: "台灣著作權？", o: ["創作即享有", "登記", "發表", "付費"], a: 0, n: "創作保護主義。" },
-            { c: "tool", q: "鎖定構圖換角色？", o: ["Canny/OpenPose", "Color", "Shuffle", "Inpaint"], a: 0, n: "ControlNet 應用。" },
-            { c: "design", q: "向量圖？", o: ["放大不失真", "失真", "沒差", "大"], a: 0, n: "數學公式。" },
-            { c: "prompt", q: "`macro`？", o: ["微距", "宏觀", "黑白", "長焦"], a: 0, n: "攝影術語。" },
-            { c: "theory", q: "Loss Function？", o: ["衡量差距", "迷路", "刪除", "亂數"], a: 0, n: "訓練指標。" },
-            { c: "tool", q: "Vary Strong 像？", o: ["High Denoising", "Low", "Inpaint", "Upscale"], a: 0, n: "重繪幅度大。" },
-            { c: "prompt", q: "扁平化？", o: ["flat design", "photo", "3d", "oil"], a: 0, n: "設計風格。" },
-            { c: "law", q: "騙說是手繪？", o: ["詐欺", "沒事", "自由", "著作權"], a: 0, n: "誠信問題。" }
-        ];
-
-        // ==========================================
-        // 2. 邏輯控制 (Logic)
-        // ==========================================
-        
+        // System Logic
         let currentSlide = 0;
-        let isQuizMode = false;
-        let quizState = {
-            questions: [],
-            currentIdx: 0,
-            score: 0,
-            wrongCats: {}
-        };
+        const slider = document.getElementById('slider');
+        const progressText = document.getElementById('pageNum');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const chapterBtns = document.querySelectorAll('.chapter-btn');
 
-        // --- 講義邏輯 ---
         function initSlides() {
-            const container = document.getElementById('slider-content');
-            container.innerHTML = '';
+            slider.innerHTML = '';
             slidesData.forEach((data, index) => {
-                const div = document.createElement('div');
-                div.className = 'slide';
-                if(index === 0) div.classList.add('active');
-                div.innerHTML = `
-                    <div style="font-size:0.9rem; color:#94a3b8; margin-bottom:10px;">${data.t}</div>
+                const slideDiv = document.createElement('div');
+                slideDiv.className = 'slide';
+                if (index === 0) slideDiv.classList.add('active');
+                
+                slideDiv.innerHTML = `
+                    <div style="font-size: 0.9rem; color: #94a3b8; margin-bottom: 10px;">${data.t}</div>
                     ${data.c}
                     <div class="slide-footer">Slide ${index + 1} / ${slidesData.length}</div>
                 `;
-                container.appendChild(div);
+                slider.appendChild(slideDiv);
             });
-            updateSlideUI();
+            updateUI();
         }
 
-        function changeSlide(dir) {
-            if(isQuizMode) return;
-            const next = currentSlide + dir;
-            if(next >= 0 && next < slidesData.length) {
-                currentSlide = next;
-                updateSlideClasses();
-                updateSlideUI();
+        function changeSlide(direction) {
+            const nextIndex = currentSlide + direction;
+            if (nextIndex >= 0 && nextIndex < slidesData.length) {
+                currentSlide = nextIndex;
+                updateSlidesClass();
+                updateUI();
             }
         }
 
-        function jumpToChapter(idx) {
-            if(isQuizMode) toggleMode(); // 如果在題庫模式，先切回來
-            currentSlide = idx;
-            updateSlideClasses();
-            updateSlideUI();
+        function jumpToChapter(index) {
+            currentSlide = index;
+            updateSlidesClass();
+            updateUI();
         }
 
-        function updateSlideClasses() {
+        function updateSlidesClass() {
             const slides = document.querySelectorAll('.slide');
-            slides.forEach((s, i) => {
-                s.classList.remove('active', 'prev');
-                if(i === currentSlide) s.classList.add('active');
-                else if(i < currentSlide) s.classList.add('prev');
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else if (index < currentSlide) {
+                    slide.classList.add('prev');
+                }
             });
-            // Scroll top
             if(slides[currentSlide]) slides[currentSlide].scrollTop = 0;
         }
 
-        function updateSlideUI() {
-            document.getElementById('pageNum').innerText = `${currentSlide + 1} / ${slidesData.length}`;
-            document.getElementById('prevBtn').disabled = currentSlide === 0;
-            document.getElementById('nextBtn').disabled = currentSlide === slidesData.length - 1;
+        function updateUI() {
+            progressText.innerText = `${currentSlide + 1} / ${slidesData.length}`;
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slidesData.length - 1;
 
-            const btns = document.querySelectorAll('.chapter-btn');
-            btns.forEach(b => b.classList.remove('active'));
-            if(currentSlide < 10) btns[0].classList.add('active');
-            else if(currentSlide < 20) btns[1].classList.add('active');
-            else if(currentSlide < 30) btns[2].classList.add('active');
-            else if(currentSlide < 42) btns[3].classList.add('active');
-            else if(currentSlide < 50) btns[4].classList.add('active');
-            else btns[5].classList.add('active');
+            chapterBtns.forEach(btn => btn.classList.remove('active'));
+            if(currentSlide < 10) chapterBtns[0].classList.add('active');
+            else if(currentSlide < 20) chapterBtns[1].classList.add('active');
+            else if(currentSlide < 30) chapterBtns[2].classList.add('active');
+            else if(currentSlide < 42) chapterBtns[3].classList.add('active');
+            else if(currentSlide < 50) chapterBtns[4].classList.add('active');
+            else chapterBtns[5].classList.add('active');
         }
 
-        // --- 題庫邏輯 ---
-        function toggleMode() {
-            isQuizMode = !isQuizMode;
-            const quizView = document.getElementById('quiz-view');
-            const modeBtn = document.getElementById('modeBtn');
-            const slideControls = document.getElementById('slideControls');
-            const chapterNav = document.getElementById('chapterNav');
-
-            if(isQuizMode) {
-                // 進入題庫
-                quizView.style.display = 'block';
-                modeBtn.innerText = '⬅ 回到講義';
-                modeBtn.style.backgroundColor = '#64748b'; // 灰色
-                slideControls.style.display = 'none';
-                chapterNav.style.display = 'none';
-                startQuiz();
-            } else {
-                // 回到講義
-                quizView.style.display = 'none';
-                modeBtn.innerText = '📝 開始模擬測驗';
-                modeBtn.style.backgroundColor = '#ef4444'; // 紅色
-                slideControls.style.display = 'flex';
-                chapterNav.style.display = 'flex';
-            }
-        }
-
-        function shuffle(array) {
-            let currentIndex = array.length, randomIndex;
-            while (currentIndex != 0) {
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex--;
-                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-            }
-            return array;
-        }
-
-        function startQuiz() {
-            // 洗牌並取前 50 題 (或全部)
-            const shuffled = shuffle([...quizBank]);
-            quizState.questions = shuffled.slice(0, 50);
-            quizState.currentIdx = 0;
-            quizState.score = 0;
-            quizState.wrongCats = {};
-            
-            document.getElementById('quiz-result').style.display = 'none';
-            document.getElementById('question-box').style.display = 'block';
-            document.getElementById('feedback').style.display = 'none';
-            document.getElementById('quiz-next-btn').style.display = 'none';
-            
-            showQuestion();
-        }
-
-        function showQuestion() {
-            const qData = quizState.questions[quizState.currentIdx];
-            const qBox = document.getElementById('question-box');
-            
-            document.getElementById('quiz-progress').innerText = `題目: ${quizState.currentIdx + 1} / ${quizState.questions.length}`;
-            document.getElementById('quiz-score').innerText = `得分: ${Math.round((quizState.score / quizState.questions.length) * 100)}`;
-            document.getElementById('feedback').style.display = 'none';
-            document.getElementById('quiz-next-btn').style.display = 'none';
-
-            // 隨機選項順序
-            let indices = [0, 1, 2, 3];
-            shuffle(indices);
-
-            let optionsHtml = '';
-            indices.forEach(i => {
-                optionsHtml += `<button class="option-btn" onclick="checkAnswer(this, ${i}, ${qData.a}, '${qData.c}')">${qData.o[i]}</button>`;
-            });
-
-            qBox.innerHTML = `
-                <span class="badge">${getCatName(qData.c)}</span>
-                <div class="question-text">${qData.q}</div>
-                <div class="options-grid">${optionsHtml}</div>
-            `;
-        }
-
-        function getCatName(c) {
-            const map = { 'theory':'AI 原理', 'prompt':'提示詞', 'tool':'軟體操作', 'law':'法規', 'design':'設計' };
-            return map[c] || '綜合';
-        }
-
-        function checkAnswer(btn, userIdx, correctIdx, cat) {
-            const btns = document.querySelectorAll('.option-btn');
-            btns.forEach(b => b.disabled = true);
-
-            const qData = quizState.questions[quizState.currentIdx];
-            
-            if(userIdx === correctIdx) {
-                btn.classList.add('correct');
-                quizState.score++;
-            } else {
-                btn.classList.add('wrong');
-                // 找正確答案 (簡單比對 onclick 字串)
-                btns.forEach(b => {
-                    if(b.getAttribute('onclick').includes(`, ${correctIdx},`)) b.classList.add('correct');
-                });
-                // 記錄弱點
-                if(!quizState.wrongCats[cat]) quizState.wrongCats[cat] = 0;
-                quizState.wrongCats[cat]++;
-            }
-
-            const fb = document.getElementById('feedback');
-            document.getElementById('feedback-text').innerText = qData.n;
-            fb.style.display = 'block';
-            
-            const nextBtn = document.getElementById('quiz-next-btn');
-            nextBtn.style.display = 'block';
-            nextBtn.scrollIntoView({behavior: 'smooth'});
-        }
-
-        function nextQuestion() {
-            quizState.currentIdx++;
-            if(quizState.currentIdx < quizState.questions.length) {
-                showQuestion();
-            } else {
-                showResult();
-            }
-        }
-
-        function showResult() {
-            document.getElementById('question-box').style.display = 'none';
-            document.getElementById('feedback').style.display = 'none';
-            document.getElementById('quiz-next-btn').style.display = 'none';
-            
-            const resBox = document.getElementById('quiz-result');
-            resBox.style.display = 'block';
-            
-            const finalScore = Math.round((quizState.score / quizState.questions.length) * 100);
-            document.getElementById('final-score-text').innerText = finalScore;
-            
-            const msg = document.getElementById('final-msg');
-            if(finalScore >= 70) {
-                msg.innerHTML = "🎉 <strong>恭喜通過！</strong> 你的觀念非常扎實。";
-                msg.style.color = "#166534";
-            } else {
-                msg.innerHTML = "💪 <strong>再接再厲！</strong> 建議針對弱點複習講義。";
-                msg.style.color = "#ca8a04";
-            }
-
-            // 弱點分析
-            const weakBox = document.getElementById('weakness-box');
-            weakBox.innerHTML = '<h3>📊 戰力分析</h3>';
-            const keys = Object.keys(quizState.wrongCats).sort((a,b) => quizState.wrongCats[b] - quizState.wrongCats[a]);
-            
-            if(keys.length === 0) {
-                weakBox.innerHTML += "<p>太強了！完美無缺！✨</p>";
-            } else {
-                keys.forEach(k => {
-                    let advice = "";
-                    if(k==='theory') advice = "複習 Day 1-2 原理 (Token, RLHF)。";
-                    if(k==='prompt') advice = "加強權重語法與負面詞。";
-                    if(k==='tool') advice = "多看 Day 4 操作 (Inpaint, Style)。";
-                    if(k==='law') advice = "小心 Day 3 著作權陷阱。";
-                    if(k==='design') advice = "注意 Day 3-5 之後的設計原則。";
-                    weakBox.innerHTML += `<p style="margin-bottom:5px;">🔴 <strong>${getCatName(k)}</strong> (錯 ${quizState.wrongCats[k]} 題)：${advice}</p>`;
-                });
-            }
-        }
-
-        function restartQuiz() {
-            startQuiz();
-        }
-
-        // 初始化
-        initSlides();
-        
-        // 鍵盤支援
         document.addEventListener('keydown', (e) => {
-            if(!isQuizMode) {
-                if(e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
-                if(e.key === 'ArrowLeft') changeSlide(-1);
-            }
+            if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+            if (e.key === 'ArrowLeft') changeSlide(-1);
         });
 
+        initSlides();
     </script>
 </body>
 </html>
